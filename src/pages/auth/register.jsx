@@ -4,7 +4,7 @@ import React from 'react';
 const register = () => {
   return (
     <Center padding={20}>
-      <Box padding={8} width="lg" shadow="dark-lg" borderRadius="xl">
+      <Box padding={8} width="lg" bgColor="gray.50" shadow="base" borderRadius="xl">
         <HStack>
           <Divider />
           <Text fontSize="lg" fontWeight="bold" whiteSpace="nowrap" color="">
@@ -13,7 +13,7 @@ const register = () => {
           <Divider />
         </HStack>
         <Stack spacing={4}>
-          <FormControl>
+          <FormControl mt={4}>
             <FormLabel>Full Name</FormLabel>
             <Input />
           </FormControl>

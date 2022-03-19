@@ -1,0 +1,11 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "username": "seto",
+      "email": "seto@mail.com",
+      "full_name": "seto zuckerberg",
+      "password": "password123"
+    }
+  ]
+}
