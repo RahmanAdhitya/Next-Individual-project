@@ -21,10 +21,10 @@ const Navbar = () => {
     });
 
     jsCookie.remove('user_data');
+    router.push('/auth/login');
   };
   useEffect(() => {
     if (!authSelector.id) {
-      //   router.push('/auth/login');
     }
   }, [authSelector]);
 

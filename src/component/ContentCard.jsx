@@ -3,8 +3,12 @@
 import { Avatar, Box, Center, HStack, Icon, Image, Spacer, Stack, Text } from '@chakra-ui/react';
 import { FaRegHeart, FaRegCommentAlt } from 'react-icons/fa';
 import React from 'react';
+import { useSelector } from 'react-redux';
 
 const ContentCard = () => {
+  const authSelector = useSelector((state) => state.auth);
+  const postSelector = useSelector((state) => state.post);
+
   return (
     <Center mt={10}>
       <Stack borderRadius="lg" padding={3} shadow="dark-lg">

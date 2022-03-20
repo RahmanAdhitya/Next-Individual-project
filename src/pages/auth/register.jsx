@@ -1,6 +1,5 @@
 import { Box, Button, Center, Divider, FormControl, FormLabel, HStack, Input, Stack, Text } from '@chakra-ui/react';
 import { useFormik } from 'formik';
-import React from 'react';
 import axiosInstance from '../../lib/api';
 
 const signupPage = () => {

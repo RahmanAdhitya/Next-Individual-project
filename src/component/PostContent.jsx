@@ -1,8 +1,35 @@
+// this file for post new content
 import { AddIcon } from '@chakra-ui/icons';
 import { Icon, Box, Button, Drawer, DrawerBody, DrawerCloseButton, DrawerContent, DrawerFooter, DrawerHeader, DrawerOverlay, FormLabel, Input, Stack, Textarea, useDisclosure, InputGroup } from '@chakra-ui/react';
+import { useFormik } from 'formik';
+import { useSelector } from 'react-redux';
+import axiosInstance from '../lib/api';
 
 const PostContent = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
+
+  const authSelector = useSelector((state) => state.auth);
+
+  const formik = useFormik({
+    initialValues: {
+      userId: authSelector.id,
+      image: '',
+      location: '',
+      likes: 0,
+      caption: '',
+    },
+    validateOnChange: false,
+    onSubmit: (values) => {
+      console.log(values);
+      axiosInstance.post('/posts', values);
+    },
+  });
+
+  const inputHandler = (event) => {
+    const { value, name } = event.target;
+
+    formik.setFieldValue(name, value);
+  };
   return (
     <>
       <Button leftIcon={<AddIcon />} colorScheme="teal" onClick={onOpen}>
@@ -19,20 +46,20 @@ const PostContent = () => {
           <DrawerBody>
             <Stack spacing="24px">
               <Box>
-                <FormLabel htmlFor="username">Name</FormLabel>
-                <Input id="username" placeholder="Please enter user name" />
+                <FormLabel htmlFor="location">Location</FormLabel>
+                <Input id="location" placeholder="location" name="location" onChange={inputHandler} />
               </Box>
 
               <Box>
-                <FormLabel htmlFor="url">Url</FormLabel>
+                <FormLabel htmlFor="image">image</FormLabel>
                 <InputGroup>
-                  <Input type="url" id="url" placeholder="Please enter domain" />
+                  <Input type="url" id="image" placeholder="Please enter domain" name="image" onChange={inputHandler} />
                 </InputGroup>
               </Box>
 
               <Box>
-                <FormLabel htmlFor="desc">Description</FormLabel>
-                <Textarea id="desc" />
+                <FormLabel htmlFor="desc">caption</FormLabel>
+                <Textarea id="desc" name="caption" onChange={inputHandler} />
               </Box>
             </Stack>
           </DrawerBody>
@@ -41,7 +68,9 @@ const PostContent = () => {
             <Button variant="outline" mr={3} onClick={onClose}>
               Cancel
             </Button>
-            <Button colorScheme="blue">Submit</Button>
+            <Button colorScheme="blue" onClick={formik.handleSubmit}>
+              Submit
+            </Button>
           </DrawerFooter>
         </DrawerContent>
       </Drawer>

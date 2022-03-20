@@ -8,10 +8,35 @@
       "password": "password123"
     },
     {
-      "username": "test",
-      "password": "test",
-      "email": "test",
-      "fullName": "test",
+      "id": 2,
+      "username": "mark",
+      "email": "mark@mail.com",
+      "full_name": "mark robson",
+      "password": "password123"
+    },
+    {
+      "id": 3,
+      "username": "bill",
+      "email": "bill@mail.com",
+      "full_name": "bill a lish",
+      "password": "password123"
+    }
+  ],
+  "posts": [
+    {
+      "id": 1,
+      "location": "test",
+      "caption": "test",
+      "likes": 0,
+      "image": "",
+      "userId": 1
+    },
+    {
+      "userId": 1,
+      "image": "test",
+      "location": "tes",
+      "likes": "",
+      "caption": "sdfasdgasgdfasf",
       "id": 2
     }
   ]
