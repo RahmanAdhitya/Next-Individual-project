@@ -18,6 +18,9 @@ export const auth_reducer = (state = init_state, action) => {
     };
   } else if (action.type === auth_types.LOGOUT_USER) {
     return init_state;
+  } else if (action.type === auth_types.EDIT_USER) {
+    return { ...state, username: action.payload.username };
   }
+
   return state;
 };

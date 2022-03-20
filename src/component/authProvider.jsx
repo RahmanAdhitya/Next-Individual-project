@@ -8,9 +8,9 @@ import Navbar from './Navbar';
 
 const AuthProvider = ({ children }) => {
   const dispatch = useDispatch();
-  const savedUserData = jsCookie.get('user_data');
 
-  useEffect(() => {
+  const result = useEffect(() => {
+    const savedUserData = jsCookie.get('user_data');
     if (savedUserData) {
       const parsedUserData = JSON.parse(savedUserData);
 
@@ -19,14 +19,9 @@ const AuthProvider = ({ children }) => {
         payload: parsedUserData,
       });
     }
-  }, [savedUserData]);
+  }, []);
 
-  return (
-    <>
-      {savedUserData ? <Navbar /> : ''}
-      {children}
-    </>
-  );
+  return children;
 };
 
 export default AuthProvider;

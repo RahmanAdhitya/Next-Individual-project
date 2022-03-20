@@ -6,6 +6,13 @@
       "email": "seto@mail.com",
       "full_name": "seto zuckerberg",
       "password": "password123"
+    },
+    {
+      "username": "test",
+      "password": "test",
+      "email": "test",
+      "fullName": "test",
+      "id": 2
     }
   ]
 }
