@@ -1,4 +1,6 @@
-// this page for check cookie if there's a cookie login in browsers
+// this page for check cookie if there's a cookie login in browsers 
+// for whole component in the project
+// import to /pages/_app.js
 
 import { useDispatch } from 'react-redux';
 import { auth_types } from '../redux/types';

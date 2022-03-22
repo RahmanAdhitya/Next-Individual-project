@@ -27,9 +27,8 @@ const PostContent = () => {
 
   const inputHandler = (event) => {
     const { value, name } = event.target;
-
-    formik.setFieldValue(name, value);
   };
+
   return (
     <>
       <Button leftIcon={<AddIcon />} colorScheme="teal" onClick={onOpen}>
