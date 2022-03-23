@@ -24,7 +24,7 @@ const postPage = () => {
     return postList.map((post) => {
       return (
         <Box m={4}>
-          <ContentCard caption={post.caption} username={post.user.username} location={post.location} likes={post.likes} image={post.image} />
+          <ContentCard caption={post.caption} username={post.user.username} location={post.location} likes={post.likes} image={post.image} id={post.id} />
         </Box>
       );
     });

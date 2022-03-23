@@ -3,9 +3,8 @@
 import { Avatar, Box, Center, HStack, Icon, Image, Stack, Text, Link as ChakraLink } from '@chakra-ui/react';
 import { FaRegHeart, FaRegCommentAlt } from 'react-icons/fa';
 import React from 'react';
-import NextLink from 'next/link';
 
-const ContentCard = ({ id, username, likes, caption, image, location }) => {
+const ContentCardDetail = ({ username, likes, caption, image, location }) => {
   return (
     <Center mt={10}>
       <Stack borderRadius="lg" padding={3} shadow="dark-lg">
@@ -21,13 +20,12 @@ const ContentCard = ({ id, username, likes, caption, image, location }) => {
         <Image width="md" objectFit="cover" maxW="100%" src={image} />
         <Box>
           <Icon boxSize={6} as={FaRegHeart} />
-          <NextLink href={`/posts/${id}`}>
-            <Icon cursor="pointer" boxSize={6} ms={4} as={FaRegCommentAlt} />
-          </NextLink>
+
+          <Icon boxSize={6} ms={4} as={FaRegCommentAlt} />
         </Box>
         <Box>
           <Text fontWeight="medium" fontSize="small">
-            {likes.toLocaleString()} likes
+            {likes.toLocaleString()}likes
           </Text>
           <Box width="md">
             <Text fontSize="sm">
@@ -41,4 +39,4 @@ const ContentCard = ({ id, username, likes, caption, image, location }) => {
   );
 };
 
-export default ContentCard;
+export default ContentCardDetail;

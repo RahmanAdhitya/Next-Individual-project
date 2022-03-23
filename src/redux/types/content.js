@@ -1,0 +1,5 @@
+export const content_types = {
+  POST_CONTENT: 'POST_CONTENT',
+  EDIT_CONTENT: 'EDIT_CONTENT',
+  DELETE_CONTENT: 'DELETE_CONTENT',
+};

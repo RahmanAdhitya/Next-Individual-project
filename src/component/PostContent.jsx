@@ -12,7 +12,6 @@ const PostContent = () => {
 
   const formik = useFormik({
     initialValues: {
-      userId: authSelector.id,
       image: '',
       location: '',
       likes: 0,
@@ -20,13 +19,14 @@ const PostContent = () => {
     },
     validateOnChange: false,
     onSubmit: (values) => {
-      console.log(values);
-      axiosInstance.post('/posts', values);
+      const newData = { ...values, userId: authSelector.id };
+      axiosInstance.post('/posts', newData);
     },
   });
-
   const inputHandler = (event) => {
     const { value, name } = event.target;
+
+    formik.setFieldValue(name, value);
   };
 
   return (
@@ -43,30 +43,29 @@ const PostContent = () => {
           <DrawerHeader borderBottomWidth="1px">Post New Content</DrawerHeader>
 
           <DrawerBody>
-            <Stack spacing="24px">
-              <Box>
-                <FormLabel htmlFor="location">Location</FormLabel>
-                <Input id="location" placeholder="location" name="location" onChange={inputHandler} />
-              </Box>
+            <form>
+              <Stack spacing="24px">
+                <Box>
+                  <FormLabel htmlFor="location">Location</FormLabel>
+                  <Input id="location" placeholder="location" name="location" onChange={inputHandler} />
+                </Box>
 
-              <Box>
-                <FormLabel htmlFor="image">image</FormLabel>
-                <InputGroup>
-                  <Input type="url" id="image" placeholder="Please enter domain" name="image" onChange={inputHandler} />
-                </InputGroup>
-              </Box>
+                <Box>
+                  <FormLabel htmlFor="image">image</FormLabel>
+                  <InputGroup>
+                    <Input type="url" id="image" placeholder="Please enter domain" name="image" onChange={inputHandler} />
+                  </InputGroup>
+                </Box>
 
-              <Box>
-                <FormLabel htmlFor="desc">caption</FormLabel>
-                <Textarea id="desc" name="caption" onChange={inputHandler} />
-              </Box>
-            </Stack>
+                <Box>
+                  <FormLabel htmlFor="desc">caption</FormLabel>
+                  <Textarea id="desc" name="caption" onChange={inputHandler} />
+                </Box>
+              </Stack>
+            </form>
           </DrawerBody>
 
           <DrawerFooter borderTopWidth="1px">
-            <Button variant="outline" mr={3} onClick={onClose}>
-              Cancel
-            </Button>
             <Button colorScheme="blue" onClick={formik.handleSubmit}>
               Submit
             </Button>

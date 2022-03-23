@@ -23,6 +23,38 @@
       "likes": 123534,
       "caption": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Vero dolore enim praesentium inventore asperiores sunt corporis unde dicta ipsa dolorum voluptatibus dolor, odio nobis est consequuntur labore!",
       "id": 3
+    },
+    {
+      "userId": 1,
+      "image": "https://images.freeimages.com/images/small-previews/4d6/chugh-1171409.jpg",
+      "location": "Jakarta",
+      "likes": 0,
+      "caption": "asdf",
+      "id": 6
+    },
+    {
+      "userId": 1,
+      "image": "https://images.freeimages.com/images/small-previews/4d6/chugh-1171409.jpg",
+      "location": "Jakarta",
+      "likes": 0,
+      "caption": "asdf",
+      "id": 7
+    },
+    {
+      "image": "https://images.freeimages.com/images/small-previews/4d6/chugh-1171409.jpg",
+      "location": "Tangerang Kota",
+      "likes": 0,
+      "caption": "test lain akun bos",
+      "userId": 2,
+      "id": 8
+    },
+    {
+      "image": "https://images.freeimages.com/images/small-previews/4d6/chugh-1171409.jpg",
+      "location": "medan",
+      "likes": 0,
+      "caption": "rtrt",
+      "userId": 2,
+      "id": 9
     }
   ],
   "users": [
