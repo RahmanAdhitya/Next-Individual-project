@@ -10,10 +10,10 @@ function MyApp({ Component, pageProps }) {
     <Provider store={store}>
       <ChakraProvider>
         {/* <NetworkMessageWrapper> */}
-        <AuthProvider>
-          <Navbar />
-          <Component {...pageProps} />
-        </AuthProvider>
+        {/* <AuthProvider> */}
+        <Navbar />
+        <Component {...pageProps} />
+        {/* </AuthProvider> */}
         {/* </NetworkMessageWrapper> */}
       </ChakraProvider>
     </Provider>

@@ -13,13 +13,18 @@ const signupPage = () => {
     validateOnChange: false,
     onSubmit: (values) => {
       console.log(values);
-      axiosInstance.post('/users', values);
+      axiosInstance.post('/auth/signup', values);
     },
   });
 
   const inputHandler = (event) => {
     const { value, name } = event.target;
 
+    formik.setFieldValue(name, value);
+  };
+
+  const inputHandlerRePassword = (event) => {
+    const { value, name } = event.target;
     formik.setFieldValue(name, value);
   };
   return (
@@ -49,10 +54,10 @@ const signupPage = () => {
             <FormLabel>Password</FormLabel>
             <Input onChange={inputHandler} name="password" />
           </FormControl>
-          {/* <FormControl>
+          <FormControl>
             <FormLabel>Repeat Password</FormLabel>
-            <Input onChange={inputHandler} />
-          </FormControl> */}
+            <Input name="repeatPassord" onChange={inputHandlerRePassword} />
+          </FormControl>
           <Button colorScheme="blue" onClick={formik.handleSubmit} disabled={formik.isSubmitting}>
             Sign up
           </Button>

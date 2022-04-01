@@ -1,26 +1,17 @@
 import jsCookie from 'js-cookie';
-import api from '../../lib/api';
+import axiosInstance from '../../lib/api';
 import { auth_types, network_types } from '../types';
 
 export const userLogin = (values, setSubmitting) => {
   return async (dispatch) => {
     try {
-      const res = await api.get('/users', {
-        params: {
-          username: values.username,
-          // password: values.password,
-        },
-      });
+      console.log(values);
 
-      if (!res.data.length) {
-        throw new Error('User not found');
-      }
+      // console.log(loginData);
 
-      if (res.data[0].password !== values.password) {
-        throw new Error('Wrong password');
-      }
-
-      const userData = res.data[0];
+      const res = await axiosInstance.get('/auth/signin');
+      console.log(res.data);
+      const userData = res.data.result;
       const stringifiedUserData = JSON.stringify(userData);
 
       jsCookie.set('user_data', stringifiedUserData);

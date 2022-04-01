@@ -9,14 +9,10 @@ const postPage = () => {
 
   const fetchPost = async () => {
     try {
-      const res = await axiosInstance.get('/posts', {
-        params: {
-          _expand: 'user',
-        },
-      });
-      setPostList(res.data);
+      const res = await axiosInstance.get('/content');
+      setPostList(res.data.result);
     } catch (err) {
-      console.log(err.message);
+      // console.log(err.message);
     }
   };
 
@@ -24,7 +20,7 @@ const postPage = () => {
     return postList.map((post) => {
       return (
         <Box m={4}>
-          <ContentCard caption={post.caption} username={post.user.username} location={post.location} likes={post.likes} image={post.image} id={post.id} />
+          <ContentCard caption={post.caption} username={post.username} location={post.location} likes={post.likes} image={post.image} id={post.id} />
         </Box>
       );
     });

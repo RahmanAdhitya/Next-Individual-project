@@ -2,12 +2,14 @@
 
 import { Icon, FormControl, FormLabel, Stack, Input, Box, Container, Text, Button, Divider, HStack, Spacer, InputGroup, InputRightElement, FormHelperText, useToast } from '@chakra-ui/react';
 import { useFormik } from 'formik';
+import jsCookie from 'js-cookie';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import { IoMdEye, IoMdEyeOff } from 'react-icons/io';
 import { useDispatch, useSelector } from 'react-redux';
 import * as Yup from 'yup';
+import axiosInstance from '../../lib/api';
 import { userLogin } from '../../redux/action/auth';
 
 const loginPage = () => {
@@ -25,15 +27,24 @@ const loginPage = () => {
       username: '',
       password: '',
     },
-    validationSchema: Yup.object().shape({
-      username: Yup.string().required('This field is required'),
-      password: Yup.string().required('This field is required'),
-    }),
+    // validationSchema: Yup.object().shape({
+    //   username: Yup.string().required('This field is required'),
+    //   password: Yup.string().required('This field is required'),
+    // }),
     validateOnChange: false,
     onSubmit: (values) => {
-      setTimeout(() => {
-        dispatch(userLogin(values, formik.setSubmitting));
-      }, 2000);
+      console.log(values);
+      const res = axiosInstance(`auth/signin?username=${values.username}&password=${values.password}`);
+      console.log(res.data);
+      const userData = res.data;
+      const stringifiedUserData = JSON.stringify(userData);
+
+      jsCookie.set('user_data', stringifiedUserData);
+
+      dispatch({
+        type: auth_types.LOGIN_USER,
+        payload: userData,
+      });
     },
   });
 
