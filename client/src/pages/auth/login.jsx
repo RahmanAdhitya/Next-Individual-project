@@ -32,9 +32,9 @@ const loginPage = () => {
     //   password: Yup.string().required('This field is required'),
     // }),
     validateOnChange: false,
-    onSubmit: (values) => {
+    onSubmit: async (values) => {
       console.log(values);
-      const res = axiosInstance(`auth/signin?username=${values.username}&password=${values.password}`);
+      const res = await axiosInstance.post(`auth/login`, values);
       console.log(res.data);
       const userData = res.data;
       const stringifiedUserData = JSON.stringify(userData);

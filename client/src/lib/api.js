@@ -3,7 +3,7 @@ import store from '../redux/store';
 import { network_types } from '../redux/types';
 
 const axiosInstance = axios.create({
-  baseURL: 'http://localhost:2000',
+  baseURL: 'http://localhost:2060',
 });
 
 axiosInstance.interceptors.request.use((config) => {
