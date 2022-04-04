@@ -1,6 +1,7 @@
 const { Op } = require('sequelize');
 const { User } = require('../lib/sequelize');
 const bcrypt = require('bcrypt');
+const { generateToken } = require('../lib/jwt');
 
 const authControllers = {
   registerUser: async (req, res) => {
@@ -64,10 +65,16 @@ const authControllers = {
 
       delete findUser.dataValues.password;
 
+      const token = generateToken({
+        id: findUser.id,
+        role: findUser.role,
+      });
+
       return res.status(200).json({
         message: 'Login success',
         result: {
           user: findUser,
+          token,
         },
       });
     } catch (err) {
