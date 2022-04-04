@@ -22,7 +22,7 @@ const authControllers = {
 
       const hashedPassword = bcrypt.hashSync(password, 5);
 
-      await User.Create({
+      await User.create({
         username,
         email,
         full_name,

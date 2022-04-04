@@ -7,6 +7,7 @@ const sequelize = new Sequelize({
   database: mysqlConfig.MYSQL_DB_NAME,
   port: 3306,
   dialect: 'mysql',
+  logging: false,
 });
 
 // Modals
