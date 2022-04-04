@@ -41,11 +41,13 @@ const authControllers = {
   },
   loginUser: async (req, res) => {
     try {
-      const { username, email, password } = req.body;
+      // const { username, email, password } = req.body;
+      const { username, password } = req.body;
 
       const findUser = await User.findOne({
         where: {
-          [Op.or]: [{ username }, { email }],
+          // [Op.or]: [{ username }, { email }],
+          username,
         },
       });
 
