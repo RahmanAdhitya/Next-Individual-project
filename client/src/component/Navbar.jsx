@@ -23,13 +23,9 @@ const Navbar = () => {
     jsCookie.remove('user_data');
     router.push('/auth/login');
   };
-  useEffect(() => {
-    if (!authSelector.id) {
-    }
-  }, [authSelector]);
 
   return (
-    <Flex h={20} bgColor="teal.400" alignItems="center" justifyContent="space-between">
+    <Flex hidden={!authSelector.id} h={20} bgColor="teal.400" alignItems="center" justifyContent="space-between">
       <HStack>
         <Menu>
           <MenuButton>

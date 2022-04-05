@@ -6,12 +6,12 @@ export const userLogin = (values, setSubmitting) => {
   return async (dispatch) => {
     try {
       console.log(values);
+      const res = await axiosInstance.post('/auth/login', values);
 
-      // console.log(loginData);
-
-      const res = await axiosInstance.get('/auth/signin');
-      console.log(res.data);
       const userData = res.data.result;
+
+      console.log(userData);
+
       const stringifiedUserData = JSON.stringify(userData);
 
       jsCookie.set('user_data', stringifiedUserData);

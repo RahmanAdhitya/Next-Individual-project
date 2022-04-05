@@ -1,4 +1,4 @@
-// this page for check cookie if there's a cookie login in browsers 
+// this page for check cookie if there's a cookie login in browsers
 // for whole component in the project
 // import to /pages/_app.js
 
@@ -13,6 +13,7 @@ const AuthProvider = ({ children }) => {
 
   const result = useEffect(() => {
     const savedUserData = jsCookie.get('user_data');
+
     if (savedUserData) {
       const parsedUserData = JSON.parse(savedUserData);
 
@@ -23,7 +24,12 @@ const AuthProvider = ({ children }) => {
     }
   }, []);
 
-  return children;
+  return (
+    <>
+      <Navbar />
+      {children}
+    </>
+  );
 };
 
 export default AuthProvider;
