@@ -1,3 +1,4 @@
+// this page for generate token
 const jwt = require('jsonwebtoken');
 
 const JWT_SECRET = process.env.JWT_SECRET_KEY;
