@@ -3,15 +3,14 @@ const { Post, User, Like } = require('../lib/sequelize');
 const postControllers = {
   postUpload: async (req, res) => {
     try {
-      const { image_url, caption, location } = req.body;
+      const { caption, location } = req.body;
 
-      // const uploadFileDomain = process.env.UPLOAD_FILE_DOMAIN;
-      // const filePath = 'post_image';
-      // const { filename } = req.file;
+      const uploadFileDomain = process.env.UPLOAD_FILE_DOMAIN;
+      const filePath = 'post_images';
+      const { filename } = req.file;
 
       const newPost = await Post.create({
-        image_url,
-        // `${uploadFileDomain}/${filePath}/${filename}`,
+        image_url: `${uploadFileDomain}/${filePath}/${filename}`,
         caption,
         location,
         // UserId: req.token.id,
