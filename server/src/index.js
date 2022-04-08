@@ -14,15 +14,17 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-const { authRoutes, postRoutes } = require('./routes');
+const { authRoutes, postRoutes, profileRoutes } = require('./routes');
 
 // app.use('/post_images', express.static(`${__dirname}/public/posts`));
 
 //for display image in browser using filename.jpeg
 app.use('/post_images', express.static(`${__dirname}/public/posts`));
+app.use('/profile_picture', express.static(`${__dirname}/public/profile_picture`));
 
 app.use('/auth', authRoutes);
 app.use('/posts', postRoutes);
+app.use('/profile', profileRoutes);
 
 app.listen(PORT, () => {
   console.log('Listening in PORT', PORT);

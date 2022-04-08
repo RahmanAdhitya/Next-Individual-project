@@ -6,7 +6,7 @@ const { loginAuthorizedToken } = require('../middlewares/authMiddleware');
 router.post(
   '/',
   loginAuthorizedToken,
-  fileUploader({
+  fileUploader((isPostContent = true), {
     destinationFolder: 'posts',
     fileType: 'image',
     prefix: 'POST',
@@ -17,4 +17,5 @@ router.post(
 router.get('/', postControllers.getAllpost);
 router.get('/:id', loginAuthorizedToken);
 router.delete('/:id', loginAuthorizedToken, postControllers.deletePost);
+
 module.exports = router;

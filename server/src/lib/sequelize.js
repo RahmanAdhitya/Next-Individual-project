@@ -15,8 +15,13 @@ const User = require('../models/user')(sequelize);
 const Post = require('../models/post')(sequelize);
 const Comment = require('../models/comment')(sequelize);
 const Like = require('../models/like')(sequelize);
+const Profile = require('../models/profile')(sequelize);
 
 // Associations
+// 1:1
+User.hasOne(Profile);
+Profile.belongsTo(User);
+
 // 1:M
 Post.belongsTo(User);
 User.hasMany(Post);
@@ -41,4 +46,5 @@ module.exports = {
   Post,
   Comment,
   Like,
+  Profile,
 };
