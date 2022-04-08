@@ -14,7 +14,7 @@ router.post(
   postControllers.postUpload
 );
 
-router.get('/', loginAuthorizedToken);
+router.get('/', postControllers.getAllpost);
 router.get('/:id', loginAuthorizedToken);
 router.delete('/:id', loginAuthorizedToken, postControllers.deletePost);
 module.exports = router;
