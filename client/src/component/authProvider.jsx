@@ -7,12 +7,15 @@ import { auth_types } from '../redux/types';
 import { useEffect } from 'react';
 import jsCookie from 'js-cookie';
 import Navbar from './Navbar';
+import { useRouter } from 'next/router';
 
 const AuthProvider = ({ children }) => {
   const dispatch = useDispatch();
+  const router = useRouter();
 
   const result = useEffect(() => {
     const savedUserData = jsCookie.get('user_data');
+    console.log(savedUserData);
 
     if (savedUserData) {
       const parsedUserData = JSON.parse(savedUserData);
@@ -21,6 +24,10 @@ const AuthProvider = ({ children }) => {
         type: auth_types.LOGIN_USER,
         payload: parsedUserData,
       });
+    }
+
+    if (!savedUserData) {
+      router.push('/auth/login');
     }
   }, []);
 

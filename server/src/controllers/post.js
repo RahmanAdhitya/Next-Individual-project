@@ -13,7 +13,7 @@ const postControllers = {
         image_url: `${uploadFileDomain}/${filePath}/${filename}`,
         caption,
         location,
-        // UserId: req.token.id,
+        UserId: req.token.id,
       });
 
       return res.status(201).json({
@@ -23,6 +23,28 @@ const postControllers = {
     } catch (err) {
       return res.status(500).json({
         message: 'server error',
+      });
+    }
+  },
+  deletePost: async (req, res) => {
+    try {
+      const { id } = req.params;
+
+      const deletePost = await Post.destroy({
+        where: {
+          id,
+          UserId: req.token.id,
+        },
+      });
+
+      return res.status(201).json({
+        message: 'Delete Post succsess',
+        result: deletePost,
+      });
+    } catch (err) {
+      console.log(err);
+      return res.status(500).json({
+        message: 'Server error',
       });
     }
   },

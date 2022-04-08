@@ -1,27 +1,32 @@
 // this file for post new content
 import { AddIcon } from '@chakra-ui/icons';
-import { Icon, Box, Button, Drawer, DrawerBody, DrawerCloseButton, DrawerContent, DrawerFooter, DrawerHeader, DrawerOverlay, FormLabel, Input, Stack, Textarea, useDisclosure, InputGroup } from '@chakra-ui/react';
+import { Icon, Box, Button, Drawer, DrawerBody, DrawerCloseButton, DrawerContent, DrawerFooter, DrawerHeader, DrawerOverlay, FormLabel, Input, Stack, Textarea, useDisclosure, InputGroup, Text } from '@chakra-ui/react';
+import { jsx } from '@emotion/react';
 import { useFormik } from 'formik';
+import jsCookies from 'js-cookie';
+import { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import axiosInstance from '../lib/api';
 
 const PostContent = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const inputFileRef = useRef(null);
 
   const authSelector = useSelector((state) => state.auth);
+  const [selectedFile, setSelectedFile] = useState(null);
 
   const formik = useFormik({
     initialValues: {
-      image: '',
       location: '',
       likes: 0,
       caption: '',
+      UserId: '',
     },
-    validateOnChange: false,
-    onSubmit: (values) => {
-      const newData = { ...values, userId: authSelector.id };
-      axiosInstance.post('/posts', newData);
-    },
+    // validateOnChange: false,
+    // onSubmit: (values) => {
+    //   const newData = { ...values, UserId: authSelector.id };
+    //   axiosInstance.post('/posts', newData);
+    // },
   });
   const inputHandler = (event) => {
     const { value, name } = event.target;
@@ -29,6 +34,30 @@ const PostContent = () => {
     formik.setFieldValue(name, value);
   };
 
+  const handelFile = (event) => {
+    setSelectedFile(event.target.files[0]);
+    console.log(event.target.files[0]);
+  };
+
+  // const choosenFile = () => {
+  //   return selectedFile.map((val) => {
+  //     return <Text>{}</Text>;
+  //   });
+  // };
+
+  const uploadContentHandler = async () => {
+    const formData = new FormData();
+    const { caption, location } = formik.values;
+
+    formData.append('caption', caption);
+    formData.append('location', location);
+    formData.append('post_image_file', selectedFile);
+    await axiosInstance.post('/posts', formData);
+  };
+
+  // useEffect(() => {
+  //   choosenFile();
+  // }, []);
   return (
     <>
       <Button leftIcon={<AddIcon />} colorScheme="teal" onClick={onOpen}>
@@ -46,15 +75,18 @@ const PostContent = () => {
             <form>
               <Stack spacing="24px">
                 <Box>
-                  <FormLabel htmlFor="location">Location</FormLabel>
-                  <Input id="location" placeholder="location" name="location" onChange={inputHandler} />
+                  <FormLabel htmlFor="image">image</FormLabel>
+                  <InputGroup>
+                    <Input accept="image/png, image/jpeg" display="none" type="file" id="image_url" placeholder="Please enter domain" name="image_url" onChange={handelFile} ref={inputFileRef} />
+                    <Button onClick={() => inputFileRef.current.click()} colorScheme="facebook">
+                      choose File
+                    </Button>
+                  </InputGroup>
                 </Box>
 
                 <Box>
-                  <FormLabel htmlFor="image">image</FormLabel>
-                  <InputGroup>
-                    <Input type="url" id="image" placeholder="Please enter domain" name="image" onChange={inputHandler} />
-                  </InputGroup>
+                  <FormLabel htmlFor="location">Location</FormLabel>
+                  <Input id="location" placeholder="location" name="location" onChange={inputHandler} />
                 </Box>
 
                 <Box>
@@ -66,7 +98,7 @@ const PostContent = () => {
           </DrawerBody>
 
           <DrawerFooter borderTopWidth="1px">
-            <Button colorScheme="blue" onClick={formik.handleSubmit}>
+            <Button colorScheme="blue" onClick={uploadContentHandler}>
               Submit
             </Button>
           </DrawerFooter>
