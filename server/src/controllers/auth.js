@@ -92,11 +92,13 @@ const authControllers = {
       const filepath = 'profile_picture';
       const { filename } = req.file;
 
-      const newProfile = await Profile.create({
-        image_url: `${upLoadFileDomain}/${filepath}/${filename}`,
-        bio,
-        UserId: req.token.id,
-      });
+      const newProfile = await User.update(
+        {
+          image_url: `${upLoadFileDomain}/${filepath}/${filename}`,
+          bio,
+        },
+        { where: { id: req.token.id } }
+      );
 
       if (!newProfile) {
         res.status(400).json({
