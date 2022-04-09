@@ -29,7 +29,7 @@ const Navbar = () => {
       <HStack>
         <Menu>
           <MenuButton>
-            <Avatar size="lg" ms={6} name="Kent Dodds" src="https://bit.ly/kent-c-dodds" />
+            <Avatar size="lg" ms={6} name={authSelector.fullName} src={authSelector.image_url} />
           </MenuButton>
           <MenuList>
             <Link href={'/profile'}>

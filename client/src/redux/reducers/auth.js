@@ -5,6 +5,8 @@ const init_state = {
   username: '',
   email: '',
   fullName: '',
+  bio: '',
+  image_url: '',
 };
 
 export const auth_reducer = (state = init_state, action) => {
@@ -15,6 +17,8 @@ export const auth_reducer = (state = init_state, action) => {
       email: action.payload.email,
       fullName: action.payload.full_name,
       id: action.payload.id,
+      bio: action.payload.bio,
+      image_url: action.payload.image_url,
     };
   } else if (action.type === auth_types.LOGOUT_USER) {
     return init_state;

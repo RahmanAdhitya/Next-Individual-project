@@ -1,7 +1,29 @@
 // this page for user profile
 
-import { SmallCloseIcon } from '@chakra-ui/icons';
-import { Avatar, AvatarBadge, Box, Button, ButtonGroup, Center, Editable, EditableInput, EditablePreview, Flex, IconButton, Input, InputGroup, InputRightElement, Stack, Text, useEditableControls } from '@chakra-ui/react';
+import { SmallAddIcon, SmallCloseIcon } from '@chakra-ui/icons';
+import {
+  Avatar,
+  AvatarBadge,
+  Box,
+  Button,
+  ButtonGroup,
+  Center,
+  Editable,
+  EditableInput,
+  EditablePreview,
+  Flex,
+  FormControl,
+  FormLabel,
+  Heading,
+  IconButton,
+  Input,
+  InputGroup,
+  InputRightElement,
+  Stack,
+  Text,
+  Textarea,
+  useEditableControls,
+} from '@chakra-ui/react';
 import { useFormik } from 'formik';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -16,17 +38,12 @@ const Profile = () => {
 
   const [edit, setEdit] = useState();
 
-  const editUsername = async () => {
-    try {
-      await axiosInstance.patch(`/users/${id}/username`);
+  const formik = useFormik({});
 
-      dispatch({
-        type: auth_types.EDIT_USER,
-        payload: '',
-      });
-    } catch (error) {
-      console.log(error);
-    }
+  const inputHandler = (event) => {
+    const { value, name } = event.target;
+
+    formik.setFieldValue(name, value);
   };
 
   useEffect(() => {
@@ -35,23 +52,39 @@ const Profile = () => {
     }
   }, [authSelector]);
   return (
-    <Center mt={10}>
-      <Box>
-        <Stack>
-          <Avatar size="xl" src="https://bit.ly/sage-adebayo">
-            <AvatarBadge as={IconButton} size="sm" rounded="full" top="-10px" colorScheme="red" aria-label="remove Image" icon={<SmallCloseIcon />} />
-          </Avatar>
+    <Flex justify={'center'} mt={8}>
+      <Box w="sm" justify={'center'} borderRadius={10} shadow="dark-lg">
+        <Flex justifyContent="space-between">
+          <Heading mt={5} ms={4} lineHeight={1.1} fontSize={{ base: 'xl', sm: '2xl' }} justifyContent="space-between">
+            User Profile
+          </Heading>
+          <Button size="sm" onClick={() => setEdit(!edit)} mt={5} me={4}>
+            Edit
+          </Button>
+        </Flex>
+        <Flex mt={5} justify={'center'} spacing={2}>
+          <Avatar size="xl" src={authSelector.image_url}></Avatar>
+        </Flex>
+
+        <Box p={6}>
           <Stack spacing={2}>
-            <InputGroup>
-              <Input variant="flushed" _active={edit ? true : false} defaultValue={authSelector.username} isDisabled={edit ? true : false} />
-              <InputRightElement children={<Icon as={edit ? FiEdit : BsCheck2Square} onClick={() => setEdit(!edit)} sx={{ _hover: { cursor: 'pointer' } }} />} />
-            </InputGroup>
-            <Input variant="flushed" defaultValue={authSelector.fullName} />
-            <Input variant="flushed" defaultValue={authSelector.email} />
+            <FormControl>
+              <FormLabel>Username</FormLabel>
+              <Input name="username" defaultValue={authSelector.username} isDisabled={edit ? false : true} />
+
+              <FormLabel mt={4}>Full Name</FormLabel>
+              <Input defaultValue={authSelector.fullName} isDisabled />
+
+              <FormLabel mt={4}>Email Address</FormLabel>
+              <Input defaultValue={authSelector.email} isDisabled />
+
+              <FormLabel mt={4}>Bio</FormLabel>
+              <Textarea name="bio" defaultValue={authSelector.bio} isDisabled={edit ? false : true} />
+            </FormControl>
           </Stack>
-        </Stack>
+        </Box>
       </Box>
-    </Center>
+    </Flex>
   );
 };
 
