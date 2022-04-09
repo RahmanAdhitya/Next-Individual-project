@@ -26,6 +26,14 @@ const User = (sequelize) => {
       type: DataTypes.STRING,
       defaultValue: 'user',
     },
+    bio: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    image_url: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
   });
 };
 

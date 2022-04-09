@@ -6,7 +6,7 @@ const { loginAuthorizedToken } = require('../middlewares/authMiddleware');
 router.post(
   '/',
   loginAuthorizedToken,
-  fileUploader((isPostContent = true), {
+  fileUploader({
     destinationFolder: 'posts',
     fileType: 'image',
     prefix: 'POST',

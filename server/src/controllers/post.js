@@ -1,3 +1,4 @@
+const DAO = require('../lib/DAO');
 const { Post, User, Like, Comment } = require('../lib/sequelize');
 
 const postControllers = {
@@ -20,6 +21,15 @@ const postControllers = {
         message: 'create new post success',
         result: newPost,
       });
+
+      // const postDao = new DAO(Post);
+
+      // const newPicture = await postDao.pictureUpload('post_images', req.body);
+
+      // return res.status(201).json({
+      //   message: 'upload post succsess',
+      //   result: newPicture,
+      // });
     } catch (err) {
       return res.status(500).json({
         message: 'server error',
@@ -37,6 +47,13 @@ const postControllers = {
         },
       });
 
+      if (!deletePost) {
+        return res.status(200).json({
+          message: 'post not found',
+          result: deletePost,
+        });
+      }
+
       return res.status(201).json({
         message: 'Delete Post succsess',
         result: deletePost,
@@ -50,7 +67,8 @@ const postControllers = {
   },
   getAllpost: async (req, res) => {
     try {
-      const allpost = await Post.findAll({ include: User, Like, Comment });
+      const { UserId } = req.query;
+      const allpost = await Post.findAll({ where: { UserId } }, { include: User });
 
       return res.status(200).json({
         message: 'get all post succsess',

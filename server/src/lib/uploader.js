@@ -2,12 +2,7 @@
 const multer = require('multer');
 const { nanoid } = require('nanoid');
 
-const fileUploader = (isPostContent = true, { destinationFolder = 'posts', prefix = 'POST', fileType = 'image' }) => {
-  if (!isPostContent) {
-    destinationFolder = 'profile_picture';
-    prefix = 'Profile';
-    fileType = 'image';
-  }
+const fileUploader = ({ destinationFolder = 'posts', prefix = 'POST', fileType = 'image' }) => {
   // multer.diskSorage is for setup location where file is stored
   const storageConfig = multer.diskStorage({
     destination: (req, file, cb) => {

@@ -24,7 +24,6 @@ app.use('/profile_picture', express.static(`${__dirname}/public/profile_picture`
 
 app.use('/auth', authRoutes);
 app.use('/posts', postRoutes);
-app.use('/profile', profileRoutes);
 
 app.listen(PORT, () => {
   console.log('Listening in PORT', PORT);
