@@ -5,6 +5,7 @@ const { loginAuthorizedToken } = require('../middlewares/authMiddleware');
 
 router.post('/register', authControllers.registerUser);
 router.post('/login', authControllers.loginUser);
+
 router.patch(
   '/profile',
   loginAuthorizedToken,

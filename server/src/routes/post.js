@@ -14,8 +14,7 @@ router.post(
   postControllers.postUpload
 );
 
-router.get('/', postControllers.getAllpost);
-router.get('/:id', loginAuthorizedToken);
+router.get('/', loginAuthorizedToken, postControllers.getAllpost);
 router.delete('/:id', loginAuthorizedToken, postControllers.deletePost);
 
 // create a comment but comment in same postId with same userID can't done because sequilize assume as dublicate object

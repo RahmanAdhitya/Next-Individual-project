@@ -67,8 +67,8 @@ const postControllers = {
   },
   getAllpost: async (req, res) => {
     try {
-      const { UserId } = req.query;
-      const allpost = await Post.findAll({ where: { UserId } }, { include: User });
+      // const { UserId } = req.query;
+      const allpost = await Post.findAll({ include: User });
 
       return res.status(200).json({
         message: 'get all post succsess',

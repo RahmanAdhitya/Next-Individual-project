@@ -86,7 +86,7 @@ const authControllers = {
   },
   profileCreate: async (req, res) => {
     try {
-      const { bio } = req.body;
+      const { bio, username } = req.body;
 
       const upLoadFileDomain = process.env.UPLOAD_FILE_DOMAIN;
       const filepath = 'profile_picture';
@@ -95,6 +95,7 @@ const authControllers = {
       const newProfile = await User.update(
         {
           image_url: `${upLoadFileDomain}/${filepath}/${filename}`,
+          username,
           bio,
         },
         { where: { id: req.token.id } }
