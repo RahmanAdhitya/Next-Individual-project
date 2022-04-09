@@ -8,9 +8,11 @@ const Comment = (sequlize) => {
       autoIncrement: true,
       allowNull: false,
     },
-    content: {
+    comment: {
       type: DataTypes.STRING,
-      allowNull: false,
+      // primaryKey: true,
+      allowNull: true,
+      unique: false,
     },
   });
 };

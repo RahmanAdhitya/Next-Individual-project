@@ -27,14 +27,14 @@ Post.belongsToMany(User, { through: Like });
 Post.belongsToMany(User, { through: Comment });
 User.belongsToMany(Post, { through: Like });
 User.belongsToMany(Post, { through: Comment });
-User.hasMany(Like);
-User.hasMany(Comment);
-Like.belongsTo(User);
-Comment.belongsTo(User);
-Post.hasMany(Like);
 Post.hasMany(Comment);
-Like.belongsTo(Post);
+User.hasMany(Comment);
+Comment.belongsTo(User);
 Comment.belongsTo(Post);
+User.hasMany(Like);
+Like.belongsTo(User);
+Post.hasMany(Like);
+Like.belongsTo(Post);
 
 module.exports = {
   sequelize,

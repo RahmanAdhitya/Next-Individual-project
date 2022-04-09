@@ -81,6 +81,61 @@ const postControllers = {
       });
     }
   },
+  commentAPost: async (req, res) => {
+    try {
+      const { comment } = req.body;
+      const { id } = req.params;
+
+      const findPost = await Post.findByPk(id);
+
+      const newcomment = await Comment.create({
+        comment,
+        UserId: req.token.id,
+        PostId: findPost.id,
+      });
+
+      res.status(201).json({
+        message: 'create comment to a post succsess',
+        result: newcomment,
+      });
+    } catch (err) {
+      console.log(err);
+      return res.status(500).json({
+        message: 'Server error',
+      });
+    }
+  },
+  likeApost: async (req, res) => {
+    try {
+      const { id } = req.params;
+
+      const findPost = await Post.findByPk(id);
+
+      const newcomment = await Comment.create({
+        UserId: req.token.id,
+        PostId: findPost.id,
+      });
+
+      await Post.increment(
+        { like_count: 1 },
+        {
+          where: {
+            id: findPost,
+          },
+        }
+      );
+
+      res.status(201).json({
+        message: 'create comment to a post succsess',
+        result: newcomment,
+      });
+    } catch (err) {
+      console.log(err);
+      return res.status(500).json({
+        message: 'Server error',
+      });
+    }
+  },
 };
 
 module.exports = postControllers;
