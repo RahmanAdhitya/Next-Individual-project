@@ -2,6 +2,7 @@
 
 import { Icon, FormControl, FormLabel, Stack, Input, Box, Container, Text, Button, Divider, HStack, Spacer, InputGroup, InputRightElement, FormHelperText, useToast } from '@chakra-ui/react';
 import { useFormik } from 'formik';
+import { ApiError } from 'next/dist/server/api-utils';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
@@ -37,7 +38,6 @@ const loginPage = () => {
 
   const inputHandler = (event) => {
     const { value, name } = event.target;
-
     formik.setFieldValue(name, value);
   };
 
