@@ -11,7 +11,6 @@ export const userLogin = (values, setSubmitting) => {
 
       const stringifyData = JSON.stringify(userData.user);
       jsCookie.set('auth_token', userData.token);
-      jsCookie.set('user_data', stringifyData);
 
       dispatch({
         type: auth_types.LOGIN_USER,
@@ -22,13 +21,32 @@ export const userLogin = (values, setSubmitting) => {
     } catch (err) {
       console.log(err);
 
-      dispatch({
-        type: network_types.NETWORK_ERROR,
-        payload: {
-          title: 'Login Failed',
-          description: err.message,
-        },
-      });
+      // dispatch({
+      //   type: network_types.NETWORK_ERROR,
+      //   payload: {
+      //     title: 'Login Failed',
+      //     description: err.message,
+      //   },
+      // });
+      setSubmitting(false);
+    }
+  };
+};
+
+export const registerUser = (values, setSubmitting) => {
+  return async () => {
+    try {
+      console.log(values);
+      if (values.password !== values.repeatPassword) {
+        throw new Error('password not match');
+      }
+      if (values.password === values.repeatPassword) {
+        delete values.repeatPassword;
+
+        await axiosInstance.post('/auth/register', values);
+      }
+    } catch (err) {
+      console.log(err);
       setSubmitting(false);
     }
   };

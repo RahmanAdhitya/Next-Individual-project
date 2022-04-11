@@ -1,12 +1,16 @@
 import { Box, Button, Center, Divider, FormControl, FormHelperText, FormLabel, HStack, Input, Stack, Text } from '@chakra-ui/react';
 import { useFormik } from 'formik';
 import { useRouter } from 'next/router';
+import { useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import * as Yup from 'yup';
 import axiosInstance from '../../lib/api';
+import { registerUser } from '../../redux/action/auth';
 
 const signupPage = () => {
   // const authSelector = useSelector((state) => state.auth);
   const router = useRouter();
+  const authSelector = useSelector((state) => state.auth);
 
   const formik = useFormik({
     initialValues: {
@@ -27,14 +31,7 @@ const signupPage = () => {
     }),
     validateOnChange: false,
     onSubmit: (values) => {
-      console.log(values);
-
-      if (values.password === values.repeatPassword) {
-        delete values.repeatPassword;
-
-        axiosInstance.post('/auth/register', values);
-        router.push('/auth/login');
-      }
+      setTimeout(() => registerUser(values, formik.setSubmitting), 3000);
     },
   });
 
@@ -48,6 +45,11 @@ const signupPage = () => {
     const { value, name } = event.target;
     formik.setFieldValue(name, value);
   };
+  useEffect(() => {
+    if (authSelector.id) {
+      router.push('/');
+    }
+  }, [authSelector.id]);
 
   return (
     <Center padding={20}>
@@ -59,36 +61,38 @@ const signupPage = () => {
           </Text>
           <Divider />
         </HStack>
-        <Stack spacing={4}>
-          <FormControl mt={4}>
-            <FormLabel>Full Name</FormLabel>
-            <Input onChange={inputHandler} name="full_name" />
-            <FormHelperText>{formik.errors.full_name}</FormHelperText>
-          </FormControl>
-          <FormControl>
-            <FormLabel>Email</FormLabel>
-            <Input onChange={inputHandler} name="email" />
-            <FormHelperText>{formik.errors.email}</FormHelperText>
-          </FormControl>
-          <FormControl>
-            <FormLabel>Username</FormLabel>
-            <Input onChange={inputHandler} name="username" />
-            <FormHelperText>{formik.errors.username}</FormHelperText>
-          </FormControl>
-          <FormControl>
-            <FormLabel>Password</FormLabel>
-            <Input onChange={inputHandler} name="password" />
-            <FormHelperText>{formik.errors.password}</FormHelperText>
-          </FormControl>
-          <FormControl>
-            <FormLabel>Repeat Password</FormLabel>
-            <Input name="repeatPassword" onChange={inputHandlerRePassword} />
-            <FormHelperText>{formik.errors.repeatPassword}</FormHelperText>
-          </FormControl>
-          <Button colorScheme="blue" onClick={formik.handleSubmit} disabled={formik.isSubmitting}>
-            Sign up
-          </Button>
-        </Stack>
+        <form>
+          <Stack spacing={4}>
+            <FormControl mt={4}>
+              <FormLabel>Full Name</FormLabel>
+              <Input onChange={inputHandler} name="full_name" />
+              <FormHelperText>{formik.errors.full_name}</FormHelperText>
+            </FormControl>
+            <FormControl>
+              <FormLabel>Email</FormLabel>
+              <Input onChange={inputHandler} name="email" />
+              <FormHelperText>{formik.errors.email}</FormHelperText>
+            </FormControl>
+            <FormControl>
+              <FormLabel>Username</FormLabel>
+              <Input onChange={inputHandler} name="username" />
+              <FormHelperText>{formik.errors.username}</FormHelperText>
+            </FormControl>
+            <FormControl>
+              <FormLabel>Password</FormLabel>
+              <Input onChange={inputHandler} name="password" />
+              <FormHelperText>{formik.errors.password}</FormHelperText>
+            </FormControl>
+            <FormControl>
+              <FormLabel>Repeat Password</FormLabel>
+              <Input name="repeatPassword" onChange={inputHandlerRePassword} />
+              <FormHelperText>{formik.errors.repeatPassword}</FormHelperText>
+            </FormControl>
+            <Button colorScheme="blue" onClick={formik.handleSubmit} disabled={formik.isSubmitting}>
+              Sign up
+            </Button>
+          </Stack>
+        </form>
       </Box>
     </Center>
   );

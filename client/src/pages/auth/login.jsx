@@ -28,10 +28,10 @@ const loginPage = () => {
       password: Yup.string().required('This field is required'),
     }),
     validateOnChange: false,
-    onSubmit: async (values) => {
+    onSubmit: (values) => {
       setTimeout(() => {
         dispatch(userLogin(values, formik.setSubmitting));
-      }, 2000);
+      }, 3000);
     },
   });
 

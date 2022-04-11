@@ -15,7 +15,6 @@ const AuthProvider = ({ children }) => {
 
   const result = useEffect(() => {
     const savedUserData = jsCookie.get('user_data');
-    console.log(savedUserData);
 
     if (savedUserData) {
       const parsedUserData = JSON.parse(savedUserData);
@@ -26,9 +25,9 @@ const AuthProvider = ({ children }) => {
       });
     }
 
-    if (!savedUserData) {
-      router.push('/auth/login');
-    }
+    // if (!savedUserData) {
+    //   router.push('/auth/login' || '/auth/register');
+    // }
   }, []);
 
   return (

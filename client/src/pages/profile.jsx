@@ -66,9 +66,7 @@ const Profile = () => {
     }
   };
 
-  useEffect(() => {
-    edit;
-  }, []);
+  useEffect(() => {}, [authSelector]);
   return (
     <Flex justify={'center'} mt={8}>
       <Box w="sm" justify={'center'} borderRadius={10} shadow="dark-lg">
