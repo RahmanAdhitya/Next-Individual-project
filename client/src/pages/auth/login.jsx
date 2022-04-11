@@ -18,8 +18,6 @@ const loginPage = () => {
   const router = useRouter();
   const authSelector = useSelector((state) => state.auth);
 
-  const toast = useToast();
-
   const formik = useFormik({
     initialValues: {
       username: '',
@@ -64,14 +62,26 @@ const loginPage = () => {
                 Password
               </FormLabel>
               <InputGroup>
-                <Input type={passwordVisible ? 'text' : 'password'} id="inputPassword" onChange={inputHandler} name="password" />
+                <Input
+                  type={passwordVisible ? 'text' : 'password'}
+                  id="inputPassword"
+                  onChange={inputHandler}
+                  name="password"
+                  //
+                />
                 <InputRightElement children={<Icon fontSize="xl" onClick={() => setPasswordVisible(!passwordVisible)} as={passwordVisible ? IoMdEyeOff : IoMdEye} sx={{ _hover: { cursor: 'pointer' } }} />} />
               </InputGroup>
               <FormHelperText>{formik.errors.password}</FormHelperText>
             </FormControl>
 
             <Stack mt="10">
-              <Button onClick={formik.handleSubmit} type="submit" colorScheme="blue" disabled={formik.isSubmitting}>
+              <Button
+                onClick={formik.handleSubmit}
+                type="submit"
+                colorScheme="blue"
+                disabled={formik.isSubmitting}
+                //
+              >
                 Login
               </Button>
             </Stack>

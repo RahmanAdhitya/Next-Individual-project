@@ -29,7 +29,7 @@ const Navbar = () => {
       <HStack>
         <Menu>
           <MenuButton>
-            <Avatar size="lg" ms={6} name={authSelector.fullName} src={authSelector.image_url} />
+            <Avatar size="lg" ms={6} name={authSelector.full_name} src={authSelector.image_url} />
           </MenuButton>
           <MenuList>
             <Link href={'/profile'}>
@@ -40,7 +40,7 @@ const Navbar = () => {
         </Menu>
         <Box>
           <Text fontSize="lg">{authSelector.username}</Text>
-          <Text fontWeight={'bold'}>{authSelector.fullName}</Text>
+          <Text fontWeight={'bold'}>{authSelector.full_name}</Text>
         </Box>
       </HStack>
 

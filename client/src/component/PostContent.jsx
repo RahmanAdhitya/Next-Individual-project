@@ -1,18 +1,19 @@
 // this file for post new content
 import { AddIcon } from '@chakra-ui/icons';
 import { Icon, Box, Button, Drawer, DrawerBody, DrawerCloseButton, DrawerContent, DrawerFooter, DrawerHeader, DrawerOverlay, FormLabel, Input, Stack, Textarea, useDisclosure, InputGroup, Text } from '@chakra-ui/react';
-import { jsx } from '@emotion/react';
 import { useFormik } from 'formik';
-import jsCookies from 'js-cookie';
+import { useRouter } from 'next/router';
 import { useEffect, useRef, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import axiosInstance from '../lib/api';
+import { auth_types } from '../redux/types';
 
+auth_types;
 const PostContent = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const inputFileRef = useRef(null);
+  const router = useRouter();
 
-  const authSelector = useSelector((state) => state.auth);
   const [selectedFile, setSelectedFile] = useState(null);
 
   const formik = useFormik({
@@ -53,11 +54,10 @@ const PostContent = () => {
     formData.append('location', location);
     formData.append('post_image_file', selectedFile);
     await axiosInstance.post('/posts', formData);
+
+    router.push('/posts');
   };
 
-  // useEffect(() => {
-  //   choosenFile();
-  // }, []);
   return (
     <>
       <Button leftIcon={<AddIcon />} colorScheme="teal" onClick={onOpen}>
@@ -98,7 +98,7 @@ const PostContent = () => {
           </DrawerBody>
 
           <DrawerFooter borderTopWidth="1px">
-            <Button colorScheme="blue" onClick={uploadContentHandler}>
+            <Button onClose={onClose} colorScheme="blue" onClick={uploadContentHandler}>
               Submit
             </Button>
           </DrawerFooter>

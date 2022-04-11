@@ -4,7 +4,7 @@ const init_state = {
   id: 0,
   username: '',
   email: '',
-  fullName: '',
+  full_name: '',
   bio: '',
   image_url: '',
 };
@@ -15,17 +15,27 @@ export const auth_reducer = (state = init_state, action) => {
       ...state,
       username: action.payload.username,
       email: action.payload.email,
-      fullName: action.payload.full_name,
+      full_name: action.payload.full_name,
       id: action.payload.id,
       bio: action.payload.bio,
       image_url: action.payload.image_url,
+      is_verified: action.payload.is_verified,
+      errorMsg: '',
     };
   } else if (action.type === auth_types.LOGOUT_USER) {
     return init_state;
   } else if (action.type === auth_types.EDIT_USER) {
-    const username = [...state.username];
-    username[action.payload.idx].username = action.payload.username;
-    return;
+    return {
+      ...state,
+      username: action.payload.username,
+      email: action.payload.email,
+      full_name: action.payload.full_name,
+      id: action.payload.id,
+      bio: action.payload.bio,
+      image_url: action.payload.image_url,
+      is_verified: action.payload.is_verified,
+      // errorMsg: '',
+    };
   }
 
   return state;

@@ -34,7 +34,7 @@ const authControllers = {
       });
     } catch (err) {
       console.log(err);
-      res.status(500).json({
+      return res.status(500).json({
         message: 'server error',
       });
     }
@@ -50,16 +50,17 @@ const authControllers = {
       });
 
       if (!findUser) {
-        res.status(400).json({
-          message: 'wrong username, email or password',
+        return res.status(400).json({
+          message: 'Wrong username or password',
         });
       }
 
       const isPasswordCorrect = bcrypt.compareSync(password, findUser.password);
 
       if (!isPasswordCorrect) {
+        console.log(isPasswordCorrect);
         return res.status(400).json({
-          message: 'wrong username, email or password',
+          message: 'Wrong username or password',
         });
       }
 
@@ -70,8 +71,14 @@ const authControllers = {
         role: findUser.role,
       });
 
+      // await mailer({
+      //   to: findUser.email,
+      //   subject: "Logged in account",
+      //   text: "An account using your email has logged in"
+      // })
+
       return res.status(200).json({
-        message: 'Login success',
+        message: 'Logged in user',
         result: {
           user: findUser,
           token,
@@ -79,14 +86,14 @@ const authControllers = {
       });
     } catch (err) {
       console.log(err);
-      res.status(500).json({
-        message: 'server error',
+      return res.status(500).json({
+        message: 'Server error',
       });
     }
   },
-  profileCreate: async (req, res) => {
+  profileCreateAndEditProfile: async (req, res) => {
     try {
-      const { bio, username } = req.body;
+      const { bio, username, email, full_name } = req.body;
 
       const upLoadFileDomain = process.env.UPLOAD_FILE_DOMAIN;
       const filepath = 'profile_picture';
@@ -97,18 +104,20 @@ const authControllers = {
           image_url: `${upLoadFileDomain}/${filepath}/${filename}`,
           username,
           bio,
+          email,
+          full_name,
         },
         { where: { id: req.token.id } }
       );
 
       if (!newProfile) {
-        res.status(400).json({
+        return res.status(400).json({
           message: 'data failed',
         });
       }
 
       return res.status(201).json({
-        message: 'profile create succses',
+        message: 'profile create or edit succses',
         result: newProfile,
       });
       // const profileDAO = new DAO(Profile);
@@ -123,6 +132,23 @@ const authControllers = {
         message: 'server error',
       });
     }
+  },
+  getUserData: async (req, res) => {
+    try {
+      const findUser = await User.findOne({
+        where: {
+          id: req.token.id,
+        },
+      });
+
+      delete findUser.dataValues.password;
+      return res.status(200).json({
+        message: 'Logged in user',
+        result: {
+          user: findUser,
+        },
+      });
+    } catch (err) {}
   },
 };
 

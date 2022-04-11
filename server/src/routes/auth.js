@@ -5,6 +5,7 @@ const { loginAuthorizedToken } = require('../middlewares/authMiddleware');
 
 router.post('/register', authControllers.registerUser);
 router.post('/login', authControllers.loginUser);
+router.get('/', loginAuthorizedToken, authControllers.getUserData);
 
 router.patch(
   '/profile',
@@ -14,7 +15,7 @@ router.patch(
     fileType: 'image',
     prefix: 'Profile',
   }).single('profile_image_file'),
-  authControllers.profileCreate
+  authControllers.profileCreateAndEditProfile
 );
 
 module.exports = router;

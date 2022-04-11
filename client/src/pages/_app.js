@@ -8,11 +8,11 @@ function MyApp({ Component, pageProps }) {
   return (
     <Provider store={store}>
       <ChakraProvider>
-        {/* <NetworkMessageWrapper> */}
-        <AuthProvider>
-          <Component {...pageProps} />
-        </AuthProvider>
-        {/* </NetworkMessageWrapper> */}
+        <NetworkMessageWrapper>
+          <AuthProvider>
+            <Component {...pageProps} />
+          </AuthProvider>
+        </NetworkMessageWrapper>
       </ChakraProvider>
     </Provider>
   );

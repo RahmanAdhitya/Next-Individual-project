@@ -1,6 +1,6 @@
 import axios from 'axios';
 import store from '../redux/store';
-import { network_types } from '../redux/types';
+import { network_types, auth_types } from '../redux/types';
 import jsCookie from 'js-cookie';
 
 const axiosInstance = axios.create({
@@ -8,7 +8,8 @@ const axiosInstance = axios.create({
 });
 
 axiosInstance.interceptors.request.use((config) => {
-  config.headers.authorization = jsCookie.get('auth_token');
+  config.headers.authorization = jsCookie.get('auth_token') || '';
+
   return config;
 });
 
@@ -18,6 +19,7 @@ axiosInstance.interceptors.response.use(
   },
   (err) => {
     if (err.response.status == 419) {
+      jsCookie.remove('auth_token');
       jsCookie.remove('user_data');
 
       store.dispatch({
@@ -29,7 +31,7 @@ axiosInstance.interceptors.response.use(
       type: network_types.NETWORK_ERROR,
       payload: {
         title: 'Network Error',
-        description: err.message,
+        description: err.response.data.message,
       },
     });
 

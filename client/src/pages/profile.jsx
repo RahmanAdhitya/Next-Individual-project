@@ -1,34 +1,12 @@
 // this page for user profile
 
 import { SmallAddIcon, SmallCloseIcon } from '@chakra-ui/icons';
-import {
-  Avatar,
-  AvatarBadge,
-  Box,
-  Button,
-  ButtonGroup,
-  Center,
-  Editable,
-  EditableInput,
-  EditablePreview,
-  Flex,
-  FormControl,
-  FormLabel,
-  Heading,
-  IconButton,
-  Input,
-  InputGroup,
-  InputRightElement,
-  Stack,
-  Text,
-  Textarea,
-  useEditableControls,
-} from '@chakra-ui/react';
+import { Avatar, Box, Button, Flex, FormControl, FormLabel, Heading, Input, Stack, Textarea } from '@chakra-ui/react';
 import { useFormik } from 'formik';
 import { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import axiosInstance from '../lib/api';
-import { auth_types, network_types } from '../redux/types';
+import { auth_types } from '../redux/types';
 
 const Profile = () => {
   const authSelector = useSelector((state) => state.auth);
@@ -40,8 +18,12 @@ const Profile = () => {
 
   const formik = useFormik({
     initialValues: {
-      username: '',
-      bio: '',
+      username: authSelector.username,
+      email: authSelector.email,
+      full_name: authSelector.full_name,
+      bio: authSelector.bio,
+      image_url: authSelector.image_url,
+      is_verified: false,
     },
   });
 
@@ -57,26 +39,36 @@ const Profile = () => {
   };
 
   const uploadContentHandler = async () => {
-    const formData = new FormData();
-    const { username, bio } = formik.values;
+    try {
+      const formData = new FormData();
+      const { username, bio, email, full_name } = formik.values;
+      console.log(formik.values);
+      formData.append('username', username);
 
-    formData.append('username', username);
-    formData.append('bio', bio);
-    formData.append('profile_image_file', selectedFile);
-    console.log(formData.values);
-    await axiosInstance.patch('/auth/profile', formData);
+      formData.append('bio', bio);
+      formData.append('profile_image_file', selectedFile);
 
-    dispatch({
-      type: auth_types.LOGIN_USER,
-      payload: formData,
-    });
+      const test = await axiosInstance.patch('/auth/profile', formData);
+      console.log(test.data);
+
+      const res = await axiosInstance.get('/auth');
+      const data = res.data.result;
+      console.log(data);
+
+      dispatch({
+        type: auth_types.EDIT_USER,
+        payload: data,
+      });
+
+      setEdit(!edit);
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   useEffect(() => {
-    if (!authSelector.id) {
-      //   router.push('/auth/login');
-    }
-  }, [authSelector]);
+    edit;
+  }, []);
   return (
     <Flex justify={'center'} mt={8}>
       <Box w="sm" justify={'center'} borderRadius={10} shadow="dark-lg">
@@ -111,7 +103,7 @@ const Profile = () => {
               <Input id="username" name="username" defaultValue={authSelector.username} isDisabled={edit ? false : true} onChange={inputHandler} />
 
               <FormLabel mt={4}>Full Name</FormLabel>
-              <Input defaultValue={authSelector.fullName} isDisabled />
+              <Input defaultValue={authSelector.full_name} isDisabled />
 
               <FormLabel mt={4}>Email Address</FormLabel>
               <Input defaultValue={authSelector.email} isDisabled />
