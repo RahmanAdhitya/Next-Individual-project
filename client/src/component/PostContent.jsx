@@ -1,9 +1,8 @@
 // this file for post new content
 import { AddIcon } from '@chakra-ui/icons';
-import { Icon, Box, Button, Drawer, DrawerBody, DrawerCloseButton, DrawerContent, DrawerFooter, DrawerHeader, DrawerOverlay, FormLabel, Input, Stack, Textarea, useDisclosure, InputGroup, Text } from '@chakra-ui/react';
+import { Box, Button, Drawer, DrawerBody, DrawerCloseButton, DrawerContent, DrawerFooter, DrawerHeader, DrawerOverlay, FormLabel, Input, Stack, Textarea, useDisclosure, InputGroup, Text } from '@chakra-ui/react';
 import { useFormik } from 'formik';
-import { useRouter } from 'next/router';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import axiosInstance from '../lib/api';
 import { auth_types } from '../redux/types';
 
@@ -11,9 +10,12 @@ auth_types;
 const PostContent = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const inputFileRef = useRef(null);
-  const router = useRouter();
 
   const [selectedFile, setSelectedFile] = useState(null);
+
+  const refreshPage = () => {
+    window.location.reload();
+  };
 
   const formik = useFormik({
     initialValues: {
@@ -39,12 +41,6 @@ const PostContent = () => {
     console.log(event.target.files[0]);
   };
 
-  // const choosenFile = () => {
-  //   return selectedFile.map((val) => {
-  //     return <Text>{}</Text>;
-  //   });
-  // };
-
   const uploadContentHandler = async () => {
     const formData = new FormData();
     const { caption, location } = formik.values;
@@ -54,7 +50,8 @@ const PostContent = () => {
     formData.append('post_image_file', selectedFile);
     await axiosInstance.post('/posts', formData);
 
-    router.push('/');
+    onClose();
+    refreshPage();
   };
 
   return (
@@ -99,7 +96,7 @@ const PostContent = () => {
           </DrawerBody>
 
           <DrawerFooter borderTopWidth="1px">
-            <Button colorScheme="blue" onClick={(uploadContentHandler, onClose)}>
+            <Button colorScheme="blue" onClick={uploadContentHandler}>
               Submit
             </Button>
           </DrawerFooter>

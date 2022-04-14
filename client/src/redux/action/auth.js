@@ -1,6 +1,6 @@
 import jsCookie from 'js-cookie';
 import api from '../../lib/api';
-import { auth_types, network_types } from '../types';
+import { auth_types } from '../types';
 
 export const userLogin = (values, setSubmitting) => {
   return async (dispatch) => {
