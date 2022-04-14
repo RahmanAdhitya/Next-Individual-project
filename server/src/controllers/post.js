@@ -21,15 +21,6 @@ const postControllers = {
         message: 'create new post success',
         result: newPost,
       });
-
-      // const postDao = new DAO(Post);
-
-      // const newPicture = await postDao.pictureUpload('post_images', req.body);
-
-      // return res.status(201).json({
-      //   message: 'upload post succsess',
-      //   result: newPicture,
-      // });
     } catch (err) {
       return res.status(500).json({
         message: 'server error',
@@ -153,6 +144,10 @@ const postControllers = {
         message: 'Server error',
       });
     }
+  },
+  getAllCommentByPostId: async (req, res) => {
+    try {
+    } catch (error) {}
   },
 };
 

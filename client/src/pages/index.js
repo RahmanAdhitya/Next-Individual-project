@@ -1,28 +1,17 @@
 import { Box, Text } from '@chakra-ui/react';
 import Head from 'next/head';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import ContentCard from '../component/ContentCard';
-import { useDispatch, useSelector } from 'react-redux';
-import api from '../lib/api';
+import { useSelector } from 'react-redux';
 import Navbar from '../component/Navbar';
-import useFetch from '../lib/hooks/fetch';
+import useFetch from '../lib/hooks/usefetch';
 
 export default function Home() {
   const authSelector = useSelector((state) => state.auth);
-  const [postList, setPostList] = useState([]);
-
-  // const fetchPost = async () => {
-  //   try {
-  //     const { data } = await api.get('/posts');
-  //     setPostList(data.result);
-  //   } catch (error) {}
-  // };
 
   const [data] = useFetch('/posts');
-  // setPostList(data);
 
   const renderPost = () => {
-    // console.log(postList);
     return data.map((post) => {
       return (
         <Box m={4}>
