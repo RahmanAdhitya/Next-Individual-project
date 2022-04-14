@@ -1,4 +1,4 @@
 node_modules
 .env
-scr/public/posts/**
-scr/public/profile_picture/**
+# scr/public/posts/**
+# scr/public/profile_picture/**
