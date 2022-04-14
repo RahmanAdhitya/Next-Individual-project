@@ -21,32 +21,33 @@ const Navbar = () => {
     });
 
     jsCookie.remove('user_data');
+    jsCookie.remove('auth_token');
     router.push('/auth/login');
   };
 
   return (
-    <Flex hidden={!authSelector.id} h={20} bgColor="teal.400" alignItems="center" justifyContent="space-between">
+    <Flex height="20" bgColor="teal.400" alignItems="center" justifyContent="space-between">
       <HStack>
         <Menu>
           <MenuButton>
             <Avatar size="lg" ms={6} name={authSelector.full_name} src={authSelector.image_url} />
           </MenuButton>
           <MenuList>
-            <Link href={'/profile'}>
+            <Link href={'/user/profile'}>
               <MenuItem>My Profile</MenuItem>
             </Link>
             <MenuItem onClick={logoutBtnHandler}>Sign out</MenuItem>
           </MenuList>
         </Menu>
         <Box>
-          <Text fontSize="lg">{authSelector.username}</Text>
-          <Text fontWeight={'bold'}>{authSelector.full_name}</Text>
+          <Text>{authSelector.username}</Text>
+          <Text fontWeight={'medium'}>{authSelector.full_name}</Text>
         </Box>
       </HStack>
 
       <HStack me={6} spacing={4}>
         <Link href={'/'}>
-          <Icon boxSize={7} as={ImHome} cursor="pointer" />
+          <Icon boxSize={8} as={ImHome} cursor="pointer" />
         </Link>
         <PostContent />
       </HStack>

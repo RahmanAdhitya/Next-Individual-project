@@ -1,7 +1,7 @@
 const { DataTypes } = require('sequelize');
 
-const Comment = (sequlize) => {
-  return sequlize.define('comment', {
+const Comment = (sequelize) => {
+  return sequelize.define('Comment', {
     id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
@@ -10,7 +10,6 @@ const Comment = (sequlize) => {
     },
     comment: {
       type: DataTypes.STRING,
-      // primaryKey: true,
       allowNull: true,
       unique: false,
     },

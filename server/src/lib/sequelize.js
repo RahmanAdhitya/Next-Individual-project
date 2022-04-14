@@ -24,16 +24,14 @@ User.hasMany(Post);
 
 //M:N
 Post.belongsToMany(User, { through: Like });
-Post.belongsToMany(User, { through: Comment });
 User.belongsToMany(Post, { through: Like });
-User.belongsToMany(Post, { through: Comment });
 Post.hasMany(Comment);
 User.hasMany(Comment);
 Comment.belongsTo(User);
 Comment.belongsTo(Post);
+Post.hasMany(Like);
 User.hasMany(Like);
 Like.belongsTo(User);
-Post.hasMany(Like);
 Like.belongsTo(Post);
 
 module.exports = {

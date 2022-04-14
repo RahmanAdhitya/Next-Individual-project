@@ -25,15 +25,3 @@ export const userLogin = (values, setSubmitting) => {
     }
   };
 };
-export const signUp = (values, setSubmitting) => {
-  return async (dispatch) => {
-    try {
-      await api.post('/auth/register', values);
-
-      setSubmitting(false);
-    } catch (err) {
-      console.log(err);
-      setSubmitting(false);
-    }
-  };
-};

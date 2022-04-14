@@ -6,16 +6,15 @@ import { useDispatch } from 'react-redux';
 import { auth_types } from '../redux/types';
 import { useEffect } from 'react';
 import jsCookie from 'js-cookie';
-import Navbar from './Navbar';
 import { useRouter } from 'next/router';
 
 const AuthProvider = ({ children }) => {
   const dispatch = useDispatch();
   const router = useRouter();
 
-  const result = useEffect(() => {
+  useEffect(() => {
+    const token = jsCookie.get('auth_token');
     const savedUserData = jsCookie.get('user_data');
-
     if (savedUserData) {
       const parsedUserData = JSON.parse(savedUserData);
 
@@ -25,17 +24,12 @@ const AuthProvider = ({ children }) => {
       });
     }
 
-    // if (!savedUserData) {
-    //   router.push('/auth/login' || '/auth/register');
+    // if (!token) {
+    //   router.push('/auth/login' || 'auth/register');
     // }
   }, []);
 
-  return (
-    <>
-      <Navbar />
-      {children}
-    </>
-  );
+  return <>{children}</>;
 };
 
 export default AuthProvider;

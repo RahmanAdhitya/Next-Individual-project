@@ -81,6 +81,24 @@ const postControllers = {
       });
     }
   },
+  getPostById: async (req, res) => {
+    try {
+      const { id } = req.params;
+      const data = await Post.findByPk(id, {
+        include: User,
+      });
+
+      return res.status(200).json({
+        message: 'get post succsess',
+        result: data,
+      });
+    } catch (err) {
+      console.log(err);
+      return res.status(500).json({
+        message: 'Server error',
+      });
+    }
+  },
   commentAPost: async (req, res) => {
     try {
       const { comment } = req.body;

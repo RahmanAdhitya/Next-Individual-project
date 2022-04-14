@@ -13,6 +13,7 @@ export const auth_reducer = (state = init_state, action) => {
   if (action.type === auth_types.LOGIN_USER) {
     return {
       ...state,
+      // username: action.payload.username,
       username: action.payload.username,
       email: action.payload.email,
       full_name: action.payload.full_name,
