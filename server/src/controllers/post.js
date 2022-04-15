@@ -1,4 +1,3 @@
-const DAO = require('../lib/DAO');
 const { Post, User, Like, Comment } = require('../lib/sequelize');
 
 const postControllers = {
@@ -58,8 +57,15 @@ const postControllers = {
   },
   getAllpost: async (req, res) => {
     try {
-      // const { UserId } = req.query;
-      const allpost = await Post.findAll({ include: User });
+      const allpost = await Post.findAll({
+        include: [
+          {
+            model: Comment,
+            include: [{ model: User, attributes: ['id', 'username'] }],
+          },
+          { model: User, attributes: ['username', 'full_name', 'image_url'] },
+        ],
+      });
 
       return res.status(200).json({
         message: 'get all post succsess',
@@ -95,12 +101,10 @@ const postControllers = {
       const { comment } = req.body;
       const { id } = req.params;
 
-      const findPost = await Post.findByPk(id);
-
       const newcomment = await Comment.create({
         comment,
         UserId: req.token.id,
-        PostId: findPost.id,
+        PostId: id,
       });
 
       res.status(201).json({
@@ -147,6 +151,14 @@ const postControllers = {
   },
   getAllCommentByPostId: async (req, res) => {
     try {
+      const { id } = req.params;
+
+      const getComment = await Comment.findAll({ where: { PostId: id } });
+
+      res.status(200).json({
+        message: 'get all comment succsess',
+        result: getComment,
+      });
     } catch (error) {}
   },
 };
