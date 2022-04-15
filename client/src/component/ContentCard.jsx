@@ -1,11 +1,46 @@
 // this page for display layout content
 
-import { Avatar, Box, HStack, Icon, Image, Stack, Text, Link as ChakraLink, Flex } from '@chakra-ui/react';
+import { Avatar, Box, HStack, Icon, Image, Stack, Text, Link as ChakraLink, Flex, Input, InputRightElement } from '@chakra-ui/react';
 import { FaRegHeart, FaRegCommentAlt } from 'react-icons/fa';
-import React from 'react';
+import React, { useState } from 'react';
 import NextLink from 'next/link';
+import { useFormik } from 'formik';
+import api from '../lib/api';
 
-const ContentCard = ({ profilPic, id, username, likes, caption, image, location }) => {
+const ContentCard = ({ profilPic, id, username, likes, caption, image, location, comment }) => {
+  const [addComment, setAddComment] = useState(true);
+  const formik = useFormik({
+    initialValues: {
+      comment: '',
+      UserId: '',
+      PostId: { id },
+    },
+  });
+
+  const inputHandler = (event) => {
+    const { value, name } = event.target;
+    formik.setFieldValue(name, value);
+  };
+
+  const postCommentHandler = async () => {
+    const formData = new FormData();
+    const { comment } = formik.values;
+
+    formData.append('comment', comment);
+    await api.post(`/${id}/comment`, formData);
+  };
+
+  const renderComment = () => {
+    return comment.map((comment) => {
+      return (
+        <Text fontSize="sm">
+          <span style={{ fontWeight: 'bold' }}>{comment.User.username}</span>
+          &nbsp;{comment.comment}
+        </Text>
+      );
+    });
+  };
+
   return (
     <Flex justify={'center'} mt={8}>
       <Stack w="sm" boxSizeing="sm" borderRadius="lg" padding={3} shadow="dark-lg">
@@ -23,7 +58,7 @@ const ContentCard = ({ profilPic, id, username, likes, caption, image, location 
         </NextLink>
         <Box>
           <Icon boxSize={6} as={FaRegHeart} />
-          <Icon cursor="pointer" boxSize={6} ms={4} as={FaRegCommentAlt} />
+          <Icon onClick={() => setAddComment(!addComment)} cursor="pointer" boxSize={6} ms={4} as={FaRegCommentAlt} />
         </Box>
         <Box>
           <Text fontWeight="medium" fontSize="small">
@@ -31,10 +66,11 @@ const ContentCard = ({ profilPic, id, username, likes, caption, image, location 
           </Text>
           <Box>
             <Text fontSize="sm">
-              <h6>{username}</h6>
-              {caption}
+              <span style={{ fontWeight: 'bold' }}>{username}</span>&nbsp;{caption}
             </Text>
           </Box>
+          <Box>{renderComment()}</Box>
+          <Input hidden={addComment ? true : false} onChange={inputHandler} name="comment" />
         </Box>
       </Stack>
     </Flex>

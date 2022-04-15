@@ -12,10 +12,21 @@ export default function Home() {
   const [data] = useFetch('/posts');
 
   const renderPost = () => {
+    console.log(data);
     return data.map((post) => {
       return (
         <Box m={4}>
-          <ContentCard caption={post.caption} profilPic={post.User.image_url} username={post.User.username} location={post.location} likes={post.like_count} image={post.image_url} id={post.id} />
+          <ContentCard
+            caption={post.caption}
+            profilPic={post.User.image_url}
+            username={post.User.username}
+            location={post.location}
+            likes={post.like_count}
+            image={post.image_url}
+            id={post.id}
+            comment={post.Comments}
+            //
+          />
         </Box>
       );
     });
