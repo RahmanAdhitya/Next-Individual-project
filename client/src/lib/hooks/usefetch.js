@@ -8,6 +8,7 @@ const useFetch = (routes = '') => {
     try {
       const res = await api.get(routes);
       setData(res.data.result);
+      console.log(res.data.result);
     } catch (error) {
       console.log(error);
     }

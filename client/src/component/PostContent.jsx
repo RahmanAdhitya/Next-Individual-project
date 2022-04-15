@@ -4,9 +4,7 @@ import { Box, Button, Drawer, DrawerBody, DrawerCloseButton, DrawerContent, Draw
 import { useFormik } from 'formik';
 import { useEffect, useRef, useState } from 'react';
 import axiosInstance from '../lib/api';
-import { auth_types } from '../redux/types';
 
-auth_types;
 const PostContent = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const inputFileRef = useRef(null);
@@ -24,11 +22,6 @@ const PostContent = () => {
       caption: '',
       UserId: '',
     },
-    // validateOnChange: false,
-    // onSubmit: (values) => {
-    //   const newData = { ...values, UserId: authSelector.id };
-    //   axiosInstance.post('/posts', newData);
-    // },
   });
   const inputHandler = (event) => {
     const { value, name } = event.target;
@@ -48,6 +41,7 @@ const PostContent = () => {
     formData.append('caption', caption);
     formData.append('location', location);
     formData.append('post_image_file', selectedFile);
+    console.log(formik.values);
     await axiosInstance.post('/posts', formData);
 
     onClose();
@@ -89,7 +83,7 @@ const PostContent = () => {
 
                 <Box>
                   <FormLabel htmlFor="desc">caption</FormLabel>
-                  <Textarea id="desc" name="caption" onChange={inputHandler} />
+                  <Textarea id="caption" name="caption" onChange={inputHandler} />
                 </Box>
               </Stack>
             </form>

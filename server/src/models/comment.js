@@ -11,7 +11,6 @@ const Comment = (sequelize) => {
     comment: {
       type: DataTypes.STRING,
       allowNull: true,
-      unique: false,
     },
   });
 };

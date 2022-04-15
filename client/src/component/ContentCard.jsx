@@ -1,19 +1,24 @@
 // this page for display layout content
 
-import { Avatar, Box, HStack, Icon, Image, Stack, Text, Link as ChakraLink, Flex, Input, InputRightElement } from '@chakra-ui/react';
+import { Avatar, Box, HStack, Icon, Image, Stack, Text, Link as ChakraLink, Flex, Input, InputRightElement, InputGroup, FormLabel } from '@chakra-ui/react';
 import { FaRegHeart, FaRegCommentAlt } from 'react-icons/fa';
 import React, { useState } from 'react';
 import NextLink from 'next/link';
 import { useFormik } from 'formik';
 import api from '../lib/api';
+import { FiSend } from 'react-icons/fi';
 
 const ContentCard = ({ profilPic, id, username, likes, caption, image, location, comment }) => {
   const [addComment, setAddComment] = useState(true);
+
+  const refreshPage = () => {
+    window.location.reload();
+  };
   const formik = useFormik({
     initialValues: {
-      comment: '',
+      PostId: id,
       UserId: '',
-      PostId: { id },
+      comment: '',
     },
   });
 
@@ -23,11 +28,9 @@ const ContentCard = ({ profilPic, id, username, likes, caption, image, location,
   };
 
   const postCommentHandler = async () => {
-    const formData = new FormData();
-    const { comment } = formik.values;
+    await api.post(`/posts/${id}-comment`, formik.values);
 
-    formData.append('comment', comment);
-    await api.post(`/${id}/comment`, formData);
+    refreshPage();
   };
 
   const renderComment = () => {
@@ -70,7 +73,27 @@ const ContentCard = ({ profilPic, id, username, likes, caption, image, location,
             </Text>
           </Box>
           <Box>{renderComment()}</Box>
-          <Input hidden={addComment ? true : false} onChange={inputHandler} name="comment" />
+        </Box>
+        <Box hidden={addComment ? true : false}>
+          <InputGroup>
+            <FormLabel htmlFor="comment"></FormLabel>
+            <Input
+              id="comment"
+              placeholder="comment"
+              name="comment"
+              onChange={inputHandler}
+              //
+            />
+
+            <InputRightElement>
+              <Icon
+                as={FiSend}
+                cursor="pointer"
+                onClick={() => postCommentHandler()}
+                //
+              />
+            </InputRightElement>
+          </InputGroup>
         </Box>
       </Stack>
     </Flex>

@@ -62,9 +62,11 @@ const postControllers = {
           {
             model: Comment,
             include: [{ model: User, attributes: ['id', 'username'] }],
+            // order: [['createdAt', 'DESC']],
           },
           { model: User, attributes: ['username', 'full_name', 'image_url'] },
         ],
+        order: [['createdAt', 'DESC']],
       });
 
       return res.status(200).json({
@@ -82,7 +84,13 @@ const postControllers = {
     try {
       const { id } = req.params;
       const data = await Post.findByPk(id, {
-        include: User,
+        include: [
+          {
+            model: Comment,
+            include: [{ model: User, attributes: ['id', 'username'] }],
+          },
+          { model: User, attributes: ['username', 'full_name', 'image_url'] },
+        ],
       });
 
       return res.status(200).json({
@@ -149,18 +157,5 @@ const postControllers = {
       });
     }
   },
-  getAllCommentByPostId: async (req, res) => {
-    try {
-      const { id } = req.params;
-
-      const getComment = await Comment.findAll({ where: { PostId: id } });
-
-      res.status(200).json({
-        message: 'get all comment succsess',
-        result: getComment,
-      });
-    } catch (error) {}
-  },
 };
-
 module.exports = postControllers;
