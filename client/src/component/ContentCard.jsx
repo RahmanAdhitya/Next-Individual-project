@@ -1,15 +1,41 @@
 // this page for display layout content
 
-import { Avatar, Box, HStack, Icon, Image, Stack, Text, Link as ChakraLink, Flex, Input, InputRightElement, InputGroup, FormLabel } from '@chakra-ui/react';
+import {
+  Avatar,
+  Box,
+  Icon,
+  Image,
+  Stack,
+  Text,
+  Link as ChakraLink,
+  Flex,
+  Input,
+  InputRightElement,
+  InputGroup,
+  FormLabel,
+  Button,
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+  PopoverHeader,
+  PopoverArrow,
+  PopoverCloseButton,
+  PopoverBody,
+} from '@chakra-ui/react';
 import { FaRegHeart, FaRegCommentAlt } from 'react-icons/fa';
 import React, { useState } from 'react';
 import NextLink from 'next/link';
 import { useFormik } from 'formik';
 import api from '../lib/api';
 import { FiSend } from 'react-icons/fi';
+import { BsThreeDotsVertical } from 'react-icons/bs';
+import { MdDeleteForever, MdShare } from 'react-icons/md';
+import { useSelector } from 'react-redux';
+import { addPointerEvent } from '@chakra-ui/utils';
 
-const ContentCard = ({ profilPic, id, username, likes, caption, image, location, comment }) => {
+const ContentCard = ({ profilPic, id, username, likes, caption, image, location, comment, userId }) => {
   const [addComment, setAddComment] = useState(true);
+  const authSelector = useSelector((state) => state.auth);
 
   const refreshPage = () => {
     window.location.reload();
@@ -44,18 +70,57 @@ const ContentCard = ({ profilPic, id, username, likes, caption, image, location,
     });
   };
 
+  const deletePostHandler = async () => {
+    await api.delete(`/posts/${id}`);
+  };
+
   return (
     <Flex justify={'center'} mt={8}>
       <Stack w="sm" boxSizeing="sm" borderRadius="lg" padding={3} shadow="dark-lg">
-        <HStack>
-          <Avatar border="2px solid teal" name={username} src={profilPic} />
+        <Flex justifyContent="space-between" alignItems="center">
+          <Flex>
+            <Avatar border="2px solid teal" name={username} src={profilPic} />
+            <Box ms={3}>
+              <Text fontWeight="medium">{username}</Text>
+              <Text fontSize="sm" fontWeight="sm">
+                {location}
+              </Text>
+            </Box>
+          </Flex>
+
           <Box>
-            <Text fontWeight="medium">{username}</Text>
-            <Text fontSize="sm" fontWeight="sm">
-              {location}
-            </Text>
+            <Popover placement="bottom-end" size="xs">
+              <PopoverTrigger>
+                <Button bgColor="transparent">
+                  <Icon boxSize={6} as={BsThreeDotsVertical} />
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent>
+                <PopoverHeader fontWeight="semibold">Option</PopoverHeader>
+                <PopoverArrow />
+                <PopoverCloseButton />
+                <PopoverBody>
+                  <Button
+                    onClick={() => deletePostHandler()}
+                    hidden={authSelector.id !== userId}
+                    w="100%"
+                    bgColor="transparent"
+                    justifyContent="space-between"
+                    //
+                  >
+                    <Text>Delete Post</Text>
+                    <Icon as={MdDeleteForever} />
+                  </Button>
+                  <Button w="100%" bgColor="transparent" justifyContent="space-between">
+                    <Text>Share</Text>
+                    <Icon as={MdShare} />
+                  </Button>
+                </PopoverBody>
+              </PopoverContent>
+            </Popover>
           </Box>
-        </HStack>
+        </Flex>
+
         <NextLink href={`/posts/${id}`}>
           <Image objectFit="cover" maxW="100%" src={image} />
         </NextLink>

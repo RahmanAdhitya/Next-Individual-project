@@ -19,6 +19,7 @@ export default function Home() {
           <ContentCard
             caption={post.caption}
             profilPic={post.User.image_url}
+            userId={post.UserId}
             username={post.User.username}
             location={post.location}
             likes={post.like_count}

@@ -1,6 +1,5 @@
 // this page for user profile
 
-import { SmallAddIcon, SmallCloseIcon } from '@chakra-ui/icons';
 import { Avatar, Box, Button, Flex, FormControl, FormLabel, Heading, Input, Stack, Textarea } from '@chakra-ui/react';
 import { useFormik } from 'formik';
 import { useEffect, useRef, useState } from 'react';
@@ -49,21 +48,20 @@ const Profile = () => {
 
       formData.append('bio', bio);
       formData.append('profile_image_file', selectedFile);
-
       await api.patch('/auth/profile', formData);
 
+      console.log(selectedFile);
       const data = {
         username: formik.values.username ? formik.values.username : authSelector.username,
         email: authSelector.email,
         full_name: authSelector.full_name,
         bio: formik.values.bio ? formik.values.bio : authSelector.bio,
-        image_url: formik.values.image_url ? formik.values.image_url : authSelector.image_url,
+        image_url: selectedFile ? selectedFile : authSelector.image_url,
         is_verified: false,
       };
       jsCookie.remove('user_data');
       const stringifyData = JSON.stringify(data);
       jsCookie.set('user_data', stringifyData);
-      console.log(data);
 
       dispatch({
         type: auth_types.EDIT_USER,
@@ -85,49 +83,55 @@ const Profile = () => {
       <Flex boxSizing="sm" justify={'center'} mt={4}>
         <Stack borderRadius={10} shadow="dark-lg">
           <Flex justifyContent="space-between">
-            <Heading mt={5} ms={4} lineHeight={1.1} fontSize={{ base: 'xl', sm: '2xl' }} justifyContent="space-between">
+            <Heading mt={3} ms={2} lineHeight={1.1} fontSize={{ base: 'xl', sm: '2xl' }} justifyContent="space-between">
               User Profile
             </Heading>
             {edit ? (
-              <Button size="sm" mt={5} me={4} onClick={() => setEdit(!edit)} colorScheme="orange">
+              <Button size="xs" mt={3} me={2} onClick={() => setEdit(!edit)} colorScheme="orange">
                 cancel
               </Button>
             ) : (
-              <Button size="sm" mt={5} me={4} onClick={() => setEdit(!edit)} colorScheme="messenger">
+              <Button size="xs" mt={3} me={2} onClick={() => setEdit(!edit)} colorScheme="messenger">
                 edit
               </Button>
             )}
           </Flex>
-          <Flex mt={5} justify={'center'} spacing={2}>
+          <Flex mt={5} justify={'center'}>
             <Avatar size="xl" src={authSelector.image_url}></Avatar>
             <Input accept="image/png, image/jpeg" display="none" type="file" id="image_url" placeholder="Please enter domain" name="image_url" onChange={handelFile} ref={inputFileRef} />
           </Flex>
-          <Flex mt={5} justify={'center'} spacing={2}>
-            <Button size="sm" hidden={edit ? false : true} onClick={() => inputFileRef.current.click()} colorScheme="facebook">
+          <Flex mt={5} justify={'center'}>
+            <Button size="xs" hidden={edit ? false : true} onClick={() => inputFileRef.current.click()} colorScheme="facebook">
               choose File
             </Button>
           </Flex>
 
-          <Box p={6}>
-            <Stack spacing={2}>
+          <Box boxSizing="sm" p={4}>
+            <Stack>
               <FormControl>
-                <FormLabel>Username</FormLabel>
-                <Input id="username" name="username" defaultValue={authSelector.username} isDisabled={edit ? false : true} onChange={inputHandler} />
+                <FormLabel fontSize="xs">Username</FormLabel>
+                <Input size="xs" fontSize="sm" id="username" name="username" defaultValue={authSelector.username} isDisabled={edit ? false : true} onChange={inputHandler} />
 
-                <FormLabel mt={4}>Full Name</FormLabel>
-                <Input defaultValue={authSelector.full_name} isDisabled />
+                <FormLabel mt={2} fontSize="xs">
+                  Full Name
+                </FormLabel>
+                <Input size="xs" fontSize="sm" defaultValue={authSelector.full_name} isDisabled />
 
-                <FormLabel mt={4}>Email Address</FormLabel>
-                <Input defaultValue={authSelector.email} isDisabled />
+                <FormLabel fontSize="xs" mt={2}>
+                  Email Address
+                </FormLabel>
+                <Input size="xs" fontSize="sm" defaultValue={authSelector.email} isDisabled />
 
-                <FormLabel mt={4}>Bio</FormLabel>
-                <Textarea id="bio" name="bio" defaultValue={authSelector.bio} isDisabled={edit ? false : true} onChange={inputHandler} />
+                <FormLabel fontSize="xs" mt={2}>
+                  Bio
+                </FormLabel>
+                <Textarea size="xs" fontSize="sm" id="bio" name="bio" defaultValue={authSelector.bio} isDisabled={edit ? false : true} onChange={inputHandler} />
               </FormControl>
             </Stack>
           </Box>
 
-          <Flex mb={5} me={5} justify={'end'} spacing={2}>
-            <Button size="sm" hidden={edit ? false : true} onClick={uploadContentHandler} colorScheme="facebook">
+          <Flex justify={'end'}>
+            <Button mb={3} me={3} size="sm" hidden={edit ? false : true} onClick={uploadContentHandler} colorScheme="facebook">
               Submit
             </Button>
           </Flex>
