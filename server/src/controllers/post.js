@@ -157,5 +157,64 @@ const postControllers = {
       });
     }
   },
+  getAllpostByUserId: async (req, res) => {
+    const { id } = req.params;
+    try {
+      const allpost = await Post.findAll({
+        where: {
+          UserId: id,
+        },
+        include: [
+          {
+            model: Comment,
+            include: [{ model: User, attributes: ['id', 'username'] }],
+            // order: [['createdAt', 'DESC']],
+          },
+          { model: User, attributes: ['username', 'full_name', 'image_url', 'id'] },
+        ],
+        order: [['createdAt', 'DESC']],
+      });
+
+      return res.status(200).json({
+        message: 'get all post succsess',
+        result: allpost,
+      });
+    } catch (err) {
+      console.log(err);
+      return res.status(500).json({
+        message: 'Server error',
+      });
+    }
+  },
+  deleteComment: async (req, res) => {
+    try {
+      const { id } = req.params;
+
+      // const findComment = await Comment.findByPk(id);
+
+      const deleteAComment = await Comment.findByPk({
+        id,
+        // where: {
+        //   id,
+        // },
+      });
+
+      if (!deleteAComment) {
+        return res.status(200).json({
+          message: 'comment not found',
+        });
+      }
+
+      return res.status(200).json({
+        message: 'Delete Comment succsess',
+        result: deleteAComment,
+      });
+    } catch (err) {
+      console.log(err);
+      return res.status(500).json({
+        message: 'Server error',
+      });
+    }
+  },
 };
 module.exports = postControllers;
