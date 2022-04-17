@@ -31,7 +31,6 @@ import { FiSend } from 'react-icons/fi';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 import { MdDeleteForever, MdShare } from 'react-icons/md';
 import { useSelector } from 'react-redux';
-import { addPointerEvent } from '@chakra-ui/utils';
 
 const ContentCard = ({ profilPic, id, username, likes, caption, image, location, comment, userId }) => {
   const [addComment, setAddComment] = useState(true);
@@ -78,15 +77,17 @@ const ContentCard = ({ profilPic, id, username, likes, caption, image, location,
     <Flex justify={'center'} mt={8}>
       <Stack w="sm" boxSizeing="sm" borderRadius="lg" padding={3} shadow="dark-lg">
         <Flex justifyContent="space-between" alignItems="center">
-          <Flex>
-            <Avatar border="2px solid teal" name={username} src={profilPic} />
-            <Box ms={3}>
-              <Text fontWeight="medium">{username}</Text>
-              <Text fontSize="sm" fontWeight="sm">
-                {location}
-              </Text>
-            </Box>
-          </Flex>
+          <NextLink href={`/user/${userId}`}>
+            <Flex cursor="pointer">
+              <Avatar border="2px solid teal" name={username} src={profilPic} />
+              <Box ms={3}>
+                <Text fontWeight="medium">{username}</Text>
+                <Text fontSize="sm" fontWeight="sm">
+                  {location}
+                </Text>
+              </Box>
+            </Flex>
+          </NextLink>
 
           <Box>
             <Popover placement="bottom-end" size="xs">

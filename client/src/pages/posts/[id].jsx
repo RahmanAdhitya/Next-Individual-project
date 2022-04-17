@@ -5,8 +5,6 @@ import axios from 'axios';
 import Navbar from '../../component/Navbar';
 
 const postDetail = ({ post }) => {
-  const router = useRouter();
-  console.log(post);
   return (
     <Box>
       <Navbar />
@@ -19,6 +17,7 @@ const postDetail = ({ post }) => {
         image={post.image_url}
         id={post.id}
         comment={post.Comments}
+        userId={post.UserId}
         //
       />
     </Box>
