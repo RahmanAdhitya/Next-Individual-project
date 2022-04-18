@@ -3,11 +3,27 @@ import { useRouter } from 'next/router';
 import ContentCard from '../../component/ContentCard';
 import axios from 'axios';
 import Navbar from '../../component/Navbar';
-import { ApiError } from 'next/dist/server/api-utils';
 import axiosInstance from '../../lib/api';
 import { useEffect, useState } from 'react';
 
-const UserDetails = ({ postList }) => {
+const UserDetails = () => {
+  const [postList, setPostList] = useState([]);
+
+  const router = useRouter();
+
+  const fetchData = async () => {
+    try {
+      const id = router.query.id;
+      console.log(id);
+      const res = await axiosInstance.get(`/posts/user/${id}`);
+      const data = res.data.result;
+      console.log(data);
+      setPostList(data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const renderPost = () => {
     return postList.map((post) => {
       return (
@@ -27,6 +43,12 @@ const UserDetails = ({ postList }) => {
     });
   };
 
+  useEffect(() => {
+    if (router.isReady) {
+      fetchData();
+    }
+  }, [router.isReady]);
+
   return (
     <Box>
       <Navbar />
@@ -35,24 +57,24 @@ const UserDetails = ({ postList }) => {
   );
 };
 
-export async function getServerSideProps(context) {
-  const { id } = context.params;
-  const { auth_token } = context.req.cookies;
+// export async function getServerSideProps(context) {
+//   const { id } = context.params;
+//   const { auth_token } = context.req.cookies;
 
-  try {
-    // this function call axios not axiosinstace because there no token in server
-    const res = await axios.get(`http://localhost:2060/posts/user/${id}`, {
-      headers: {
-        Authorization: auth_token,
-      },
-    });
-    const postList = res.data.result;
+//   try {
+//     // this function call axios not axiosinstace because there no token in server
+//     const res = await axios.get(`http://localhost:2060/posts/user/${id}`, {
+//       headers: {
+//         Authorization: auth_token,
+//       },
+//     });
+//     const postList = res.data.result;
 
-    return { props: { postList } };
-  } catch (err) {
-    return {
-      props: {},
-    };
-  }
-}
+//     return { props: { postList } };
+//   } catch (err) {
+//     return {
+//       props: {},
+//     };
+//   }
+// }
 export default UserDetails;

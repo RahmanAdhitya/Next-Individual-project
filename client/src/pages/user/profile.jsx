@@ -51,16 +51,20 @@ const Profile = () => {
       await api.patch('/auth/profile', formData);
 
       console.log(selectedFile);
-      const data = {
-        username: formik.values.username ? formik.values.username : authSelector.username,
-        email: authSelector.email,
-        full_name: authSelector.full_name,
-        bio: formik.values.bio ? formik.values.bio : authSelector.bio,
-        image_url: selectedFile ? selectedFile : authSelector.image_url,
-        is_verified: false,
-      };
-      jsCookie.remove('user_data');
+      // const data = {
+      //   username: formik.values.username ? formik.values.username : authSelector.username,
+      //   email: authSelector.email,
+      //   full_name: authSelector.full_name,
+      //   bio: formik.values.bio ? formik.values.bio : authSelector.bio,
+      //   image_url: selectedFile ? selectedFile : authSelector.image_url,
+      //   is_verified: false,
+      // };
+
+      const res = await api.get('auth');
+      const data = res.data.result;
       const stringifyData = JSON.stringify(data);
+
+      jsCookie.remove('user_data');
       jsCookie.set('user_data', stringifyData);
 
       dispatch({

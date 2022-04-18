@@ -25,7 +25,7 @@ const AuthProvider = ({ children }) => {
     }
 
     if (!token) {
-      router.push('/auth/login' || 'auth/register');
+      // router.push('/auth/login' || 'auth/register');
     }
   }, []);
 

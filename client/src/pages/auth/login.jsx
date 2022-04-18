@@ -104,7 +104,7 @@ const loginPage = () => {
                 Don't have an account?
               </Text>
               <Text>
-                <Link href={'./sing-up'}>
+                <Link href={'./singup'}>
                   <Button fontSize="md" variant="link" colorScheme="blue" size="sm">
                     Sign up
                   </Button>
