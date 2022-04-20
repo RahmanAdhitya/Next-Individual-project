@@ -12,7 +12,7 @@ import Navbar from '../../component/Navbar';
 const Profile = () => {
   const authSelector = useSelector((state) => state.auth);
   const inputFileRef = useRef(null);
-  const [selectedFile, setSelectedFile] = useState(null);
+  const [selectedFile, setSelectedFile] = useState(authSelector.image_url);
   const dispatch = useDispatch();
 
   const [edit, setEdit] = useState();
@@ -44,33 +44,20 @@ const Profile = () => {
       const formData = new FormData();
       const { username, bio, email, full_name } = formik.values;
       console.log(formik.values);
-      formData.append('username', username);
-
-      formData.append('bio', bio);
+      // console.log(username, bio, email, full_name);
+      formData.append('username', username || authSelector.username);
+      formData.append('full_name', full_name || authSelector.full_name);
+      formData.append('bio', bio || authSelector.bio);
+      formData.append('email', authSelector.email);
       formData.append('profile_image_file', selectedFile);
-      await api.patch('/auth/profile', formData);
-
-      console.log(selectedFile);
-      // const data = {
-      //   username: formik.values.username ? formik.values.username : authSelector.username,
-      //   email: authSelector.email,
-      //   full_name: authSelector.full_name,
-      //   bio: formik.values.bio ? formik.values.bio : authSelector.bio,
-      //   image_url: selectedFile ? selectedFile : authSelector.image_url,
-      //   is_verified: false,
-      // };
-
-      const res = await api.get('auth');
+      const res = await api.patch('/auth/profile', formData);
       const data = res.data.result;
+
+      console.log(data);
       const stringifyData = JSON.stringify(data);
 
       jsCookie.remove('user_data');
       jsCookie.set('user_data', stringifyData);
-
-      dispatch({
-        type: auth_types.EDIT_USER,
-        payload: data,
-      });
 
       setEdit(!edit);
     } catch (err) {
@@ -78,9 +65,6 @@ const Profile = () => {
     }
   };
 
-  useEffect(() => {
-    // uploadContentHandler();
-  }, [authSelector.username, authSelector.bio, authSelector.image_url]);
   return (
     <>
       <Navbar />
@@ -119,7 +103,7 @@ const Profile = () => {
                 <FormLabel mt={2} fontSize="xs">
                   Full Name
                 </FormLabel>
-                <Input size="xs" fontSize="sm" defaultValue={authSelector.full_name} isDisabled />
+                <Input size="xs" fontSize="sm" defaultValue={authSelector.full_name} isDisabled={edit ? false : true} id="full_name" name="full_name" onChange={inputHandler} />
 
                 <FormLabel fontSize="xs" mt={2}>
                   Email Address

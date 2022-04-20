@@ -99,16 +99,18 @@ const authControllers = {
       const filepath = 'profile_picture';
       const { filename } = req.file;
 
-      const newProfile = await User.update(
-        {
-          image_url: `${upLoadFileDomain}/${filepath}/${filename}`,
-          username,
-          bio,
-          email,
-          full_name,
-        },
-        { where: { id: req.token.id } }
-      );
+      // const isUsernameEmailRegisterd = await User.findOne({
+      //   where: { username },
+      // });
+
+      // if (isUsernameEmailRegisterd) {
+      //   return res.status(400).json({
+      //     message: 'username is not available',
+      //   });
+      // }
+      const updateData = { image_url: `${upLoadFileDomain}/${filepath}/${filename}`, username, bio, email, full_name };
+
+      const newProfile = await User.update(updateData, { where: { id: req.token.id } });
 
       if (!newProfile) {
         return res.status(400).json({
@@ -118,15 +120,8 @@ const authControllers = {
 
       return res.status(201).json({
         message: 'profile create or edit succses',
-        result: newProfile,
+        result: updateData,
       });
-      // const profileDAO = new DAO(Profile);
-
-      // const newPicture = await profileDAO.pictureUpload('profile_picture', req.body);
-      // return res.status(201).json({
-      //   message: 'upload success',
-      //   result: newPicture,
-      // });
     } catch (err) {
       return res.status(500).json({
         message: 'server error',
@@ -148,7 +143,32 @@ const authControllers = {
           user: findUser,
         },
       });
-    } catch (err) {}
+    } catch (err) {
+      return res.status(500).json({
+        message: 'server error',
+      });
+    }
+  },
+  getUserDataById: async (req, res) => {
+    try {
+      const { id } = req.params;
+
+      const findUser = await User.findOne({
+        where: {
+          id,
+        },
+      });
+
+      delete findUser.dataValues.password;
+      return res.status(200).json({
+        message: 'user data gate success',
+        result: findUser,
+      });
+    } catch (err) {
+      return res.status(500).json({
+        message: 'server error',
+      });
+    }
   },
 };
 

@@ -5,7 +5,8 @@ const { loginAuthorizedToken } = require('../middlewares/authMiddleware');
 
 router.post('/register', authControllers.registerUser);
 router.post('/login', authControllers.loginUser);
-router.get('/', loginAuthorizedToken, authControllers.getUserData);
+router.get('/:id', loginAuthorizedToken, authControllers.getUserData);
+router.get('/user/:id', loginAuthorizedToken, authControllers.getUserDataById);
 
 router.patch(
   '/profile',

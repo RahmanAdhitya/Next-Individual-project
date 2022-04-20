@@ -31,8 +31,9 @@ import { FiSend } from 'react-icons/fi';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 import { MdDeleteForever, MdShare } from 'react-icons/md';
 import { useSelector } from 'react-redux';
+import moment from 'moment';
 
-const ContentCard = ({ profilPic, id, username, likes, caption, image, location, comment, userId }) => {
+const ContentCard = ({ profilPic, id, username, likes, caption, image, location, comment, userId, createDate }) => {
   const [addComment, setAddComment] = useState(true);
   const authSelector = useSelector((state) => state.auth);
 
@@ -61,10 +62,13 @@ const ContentCard = ({ profilPic, id, username, likes, caption, image, location,
   const renderComment = () => {
     return comment.map((comment) => {
       return (
-        <Text fontSize="sm">
-          <span style={{ fontWeight: 'bold' }}>{comment.User.username}</span>
-          &nbsp;{comment.comment}
-        </Text>
+        <Flex alignItems="center" justify="space-between">
+          <Text fontSize="sm">
+            <span style={{ fontWeight: 'bold' }}>{comment.User.username}</span>
+            &nbsp;{comment.comment}
+          </Text>
+          <Text fontSize="xx-small">{moment(comment.createdAt).startOf('day').fromNow()}</Text>
+        </Flex>
       );
     });
   };
@@ -112,10 +116,12 @@ const ContentCard = ({ profilPic, id, username, likes, caption, image, location,
                     <Text>Delete Post</Text>
                     <Icon as={MdDeleteForever} />
                   </Button>
-                  <Button w="100%" bgColor="transparent" justifyContent="space-between">
-                    <Text>Share</Text>
-                    <Icon as={MdShare} />
-                  </Button>
+                  <NextLink href={`/posts/${id}`}>
+                    <Button w="100%" bgColor="transparent" justifyContent="space-between">
+                      <Text>Share</Text>
+                      <Icon as={MdShare} />
+                    </Button>
+                  </NextLink>
                 </PopoverBody>
               </PopoverContent>
             </Popover>
@@ -125,10 +131,13 @@ const ContentCard = ({ profilPic, id, username, likes, caption, image, location,
         <NextLink href={`/posts/${id}`}>
           <Image objectFit="cover" maxW="100%" src={image} />
         </NextLink>
-        <Box>
-          <Icon boxSize={6} as={FaRegHeart} />
-          <Icon onClick={() => setAddComment(!addComment)} cursor="pointer" boxSize={6} ms={4} as={FaRegCommentAlt} />
-        </Box>
+        <Flex justify="space-between">
+          <Box>
+            <Icon boxSize={6} as={FaRegHeart} />
+            <Icon onClick={() => setAddComment(!addComment)} cursor="pointer" boxSize={6} ms={4} as={FaRegCommentAlt} />
+          </Box>
+          <Text fontSize="xs">{moment(createDate).format('Do MMMM YYYY')}</Text>
+        </Flex>
         <Box>
           <Text fontWeight="medium" fontSize="small">
             {likes.toLocaleString()} Likes

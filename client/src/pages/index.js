@@ -1,6 +1,5 @@
 import { Box, Text } from '@chakra-ui/react';
 import Head from 'next/head';
-import { useEffect } from 'react';
 import ContentCard from '../component/ContentCard';
 import { useSelector } from 'react-redux';
 import Navbar from '../component/Navbar';
@@ -12,7 +11,6 @@ export default function Home() {
   const [data] = useFetch('/posts');
 
   const renderPost = () => {
-    console.log(data);
     return data.map((post) => {
       return (
         <Box m={4}>
@@ -26,6 +24,7 @@ export default function Home() {
             image={post.image_url}
             id={post.id}
             comment={post.Comments}
+            createDate={post.createdAt}
             //
           />
         </Box>

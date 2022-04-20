@@ -1,31 +1,20 @@
-import { Box } from '@chakra-ui/react';
+import { Avatar, Box, Flex, Text } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import ContentCard from '../../component/ContentCard';
-import axios from 'axios';
 import Navbar from '../../component/Navbar';
-import axiosInstance from '../../lib/api';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
+import useFetch from '../../lib/hooks/usefetch';
+import profileCard from '../../component/profileCard';
 
 const UserDetails = () => {
-  const [postList, setPostList] = useState([]);
-
   const router = useRouter();
 
-  const fetchData = async () => {
-    try {
-      const id = router.query.id;
-      console.log(id);
-      const res = await axiosInstance.get(`/posts/user/${id}`);
-      const data = res.data.result;
-      console.log(data);
-      setPostList(data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  const id = router.query.id;
+  const [data] = useFetch(`/posts/user/${id}`);
+  const [profile] = useFetch(`/auth/user/${id}`);
 
   const renderPost = () => {
-    return postList.map((post) => {
+    return data.map((post) => {
       return (
         <ContentCard
           caption={post.caption}
@@ -43,38 +32,33 @@ const UserDetails = () => {
     });
   };
 
+  const renderProfile = () => {
+    return (
+      <Box justifyItems="center">
+        <Avatar src={profile.image_url} />
+        <Text>{profile.username}</Text>
+        <Text>{profile.full_name}</Text>
+        <Text>{profile.bio}</Text>
+      </Box>
+    );
+  };
+
   useEffect(() => {
     if (router.isReady) {
-      fetchData();
     }
   }, [router.isReady]);
 
   return (
     <Box>
       <Navbar />
-      {renderPost()}
+      <Flex>
+        <Box>{renderProfile()}</Box>
+        <Flex justify={'center'}>
+          <Box>{renderPost()}</Box>
+        </Flex>
+      </Flex>
     </Box>
   );
 };
 
-// export async function getServerSideProps(context) {
-//   const { id } = context.params;
-//   const { auth_token } = context.req.cookies;
-
-//   try {
-//     // this function call axios not axiosinstace because there no token in server
-//     const res = await axios.get(`http://localhost:2060/posts/user/${id}`, {
-//       headers: {
-//         Authorization: auth_token,
-//       },
-//     });
-//     const postList = res.data.result;
-
-//     return { props: { postList } };
-//   } catch (err) {
-//     return {
-//       props: {},
-//     };
-//   }
-// }
 export default UserDetails;

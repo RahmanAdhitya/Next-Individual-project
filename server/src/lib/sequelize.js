@@ -23,8 +23,8 @@ Post.belongsTo(User);
 User.hasMany(Post);
 
 //M:N
-Post.belongsToMany(User, { through: Like });
-User.belongsToMany(Post, { through: Like });
+Post.belongsToMany(User, { through: Like, as: 'user_likes' });
+User.belongsToMany(Post, { through: Like, as: 'user_likes' });
 Post.hasMany(Comment);
 User.hasMany(Comment);
 Comment.belongsTo(User);

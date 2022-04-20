@@ -57,15 +57,29 @@ const postControllers = {
   },
   getAllpost: async (req, res) => {
     try {
-      const allpost = await Post.findAll({
+      const { _limit = 10, _page = 1, _sortBy = '', _sortDir = '' } = req.query;
+
+      delete req.query._limit;
+      delete req.query._page;
+      delete req.query._sortBy;
+      delete req.query._sortDir;
+
+      const allpost = await Post.findAndCountAll({
+        where: {
+          ...req.query,
+        },
+        limit: _limit ? parseInt(_limit) : undefined,
+        offset: (_page - 1) * _limit,
         include: [
           {
             model: Comment,
             include: [{ model: User, attributes: ['id', 'username'] }],
-            // order: [['createdAt', 'DESC']],
+            order: [['createdAt', 'DESC']],
           },
           { model: User, attributes: ['username', 'full_name', 'image_url'] },
+          { model: User, as: 'user_likes' },
         ],
+        distinct: true,
         order: [['createdAt', 'DESC']],
       });
 
@@ -170,7 +184,7 @@ const postControllers = {
             include: [{ model: User, attributes: ['id', 'username'] }],
             // order: [['createdAt', 'DESC']],
           },
-          { model: User, attributes: ['username', 'full_name', 'image_url', 'id'] },
+          { model: User, attributes: ['username', 'full_name', 'image_url', 'id', 'bio'] },
         ],
         order: [['createdAt', 'DESC']],
       });
@@ -178,36 +192,6 @@ const postControllers = {
       return res.status(200).json({
         message: 'get all post succsess',
         result: allpost,
-      });
-    } catch (err) {
-      console.log(err);
-      return res.status(500).json({
-        message: 'Server error',
-      });
-    }
-  },
-  deleteComment: async (req, res) => {
-    try {
-      const { id } = req.params;
-
-      // const findComment = await Comment.findByPk(id);
-
-      const deleteAComment = await Comment.findByPk({
-        id,
-        // where: {
-        //   id,
-        // },
-      });
-
-      if (!deleteAComment) {
-        return res.status(200).json({
-          message: 'comment not found',
-        });
-      }
-
-      return res.status(200).json({
-        message: 'Delete Comment succsess',
-        result: deleteAComment,
       });
     } catch (err) {
       console.log(err);
