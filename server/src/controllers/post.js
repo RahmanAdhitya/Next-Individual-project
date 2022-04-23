@@ -74,7 +74,6 @@ const postControllers = {
           {
             model: Comment,
             include: [{ model: User, attributes: ['id', 'username'] }],
-            order: [['createdAt', 'DESC']],
           },
           { model: User, attributes: ['username', 'full_name', 'image_url'] },
           { model: User, as: 'user_likes' },
