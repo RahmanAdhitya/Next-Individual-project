@@ -5,7 +5,6 @@ import Navbar from '../../component/Navbar';
 import { useEffect } from 'react';
 import useFetch from '../../lib/hooks/usefetch';
 import useFetchUser from '../../lib/hooks/useFetchUser';
-import profileCard from '../../component/profileCard';
 
 const UserDetails = () => {
   const router = useRouter();
@@ -15,6 +14,7 @@ const UserDetails = () => {
   const [data] = useFetch(`/posts/user/${id}`);
   console.log(data);
   const [profile] = useFetchUser(`/auth/user/${id}`);
+  console.log(id);
 
   const renderPost = () => {
     return data.map((post) => {
@@ -44,7 +44,6 @@ const UserDetails = () => {
         <Flex justify="center">
           <Avatar size="xl" src={profile.image_url} border="3px solid teal" />
         </Flex>
-
         <Text fontWeight="bold" textAlign="center">{`@${profile.username}`}</Text>
         <Text textAlign="center">{profile.full_name}</Text>
         <Text textAlign="center">{profile.bio}</Text>
@@ -55,13 +54,13 @@ const UserDetails = () => {
   useEffect(() => {
     if (router.isReady) {
     }
-  }, [router.isReady]);
+  }, [router.isReady.data]);
 
   return (
     <Box>
       <Navbar />
       <Flex>
-        <Box>{renderProfile()}</Box>
+        <Box>{renderProfile}</Box>
         <Spacer />
         <Flex justify={'center'}>
           <Box>{renderPost()}</Box>

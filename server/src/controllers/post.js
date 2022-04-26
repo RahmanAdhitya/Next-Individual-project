@@ -76,7 +76,10 @@ const postControllers = {
             include: [{ model: User, attributes: ['id', 'username'], order: [['createdAt', 'DESC']] }],
           },
           { model: User, attributes: ['username', 'full_name', 'image_url'] },
-          { model: User, as: 'user_likes' },
+          {
+            model: Like,
+            include: [{ model: User, attributes: ['id', 'username'], order: [['createdAt', 'DESC']] }],
+          },
         ],
         distinct: true,
         order: [['createdAt', 'DESC']],
@@ -142,32 +145,81 @@ const postControllers = {
   },
   likeApost: async (req, res) => {
     try {
-      const { id } = req.params;
+      const { PostId } = req.params;
 
-      const findPost = await Post.findByPk(id);
-
-      const newcomment = await Comment.create({
-        UserId: req.token.id,
-        PostId: findPost.id,
+      const findLikeStatus = await Like.findOne({
+        where: {
+          PostId,
+          UserId: req.token.id,
+        },
+        defaults: {
+          ...req.body,
+        },
       });
 
-      await Post.increment(
-        { like_count: 1 },
-        {
+      if (!findLikeStatus) {
+        const likingPost = await Post.findByPk(PostId);
+        await Like.create({
+          PostId,
+          UserId: req.token.id,
+        });
+
+        await likingPost.increment('like_count', { by: 1 });
+
+        return res.status(200).json({
+          message: 'Liked post',
+        });
+      }
+
+      if (findLikeStatus) {
+        await Like.destroy({
           where: {
-            id: findPost,
+            PostId,
+            UserId: req.token.id,
           },
-        }
-      );
+          defaults: {
+            ...req.body,
+          },
+        });
 
-      res.status(201).json({
-        message: 'create comment to a post succsess',
-        result: newcomment,
-      });
+        const likedPost = await Post.findByPk(PostId);
+
+        await likedPost.decrement('like_count', { by: 1 });
+
+        return res.status(200).json({
+          message: 'disLiked post',
+        });
+      }
     } catch (err) {
       console.log(err);
       return res.status(500).json({
         message: 'Server error',
+      });
+    }
+  },
+  likeSatus: async (req, res) => {
+    const { PostId } = req.params;
+
+    const findLikeStatus = await Like.findOne({
+      where: {
+        PostId,
+        UserId: req.token.id,
+      },
+      defaults: {
+        ...req.body,
+      },
+    });
+
+    if (findLikeStatus) {
+      return res.status(200).json({
+        message: 'post already like',
+        result: true,
+      });
+    }
+    if (!findLikeStatus) {
+      return res.status(200).json({
+        message: 'post not liked yet',
+        result: false,
       });
     }
   },

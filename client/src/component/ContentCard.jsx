@@ -22,8 +22,8 @@ import {
   PopoverCloseButton,
   PopoverBody,
 } from '@chakra-ui/react';
-import { FaRegHeart, FaRegCommentAlt } from 'react-icons/fa';
-import React, { useState } from 'react';
+import { FaHeart, FaCommentAlt } from 'react-icons/fa';
+import React, { useEffect, useState } from 'react';
 import NextLink from 'next/link';
 import { useFormik } from 'formik';
 import api from '../lib/api';
@@ -35,6 +35,7 @@ import moment from 'moment';
 
 const ContentCard = ({ profilPic, id, username, likes, caption, image, location, comment, userId, createDate }) => {
   const [addComment, setAddComment] = useState(true);
+  const [like, setLike] = useState('false');
   const authSelector = useSelector((state) => state.auth);
 
   const refreshPage = () => {
@@ -76,6 +77,21 @@ const ContentCard = ({ profilPic, id, username, likes, caption, image, location,
   const deletePostHandler = async () => {
     await api.delete(`/posts/${id}`);
   };
+
+  const likeStatus = async () => {
+    const res = await api.get(`posts/${id}/like`);
+    console.log(res.data.result);
+    setLike(res.data.result);
+  };
+
+  const likePost = async () => {
+    console.log(id);
+    await api.patch(`posts/${id}/like`);
+  };
+
+  useEffect(() => {
+    likeStatus();
+  }, []);
 
   return (
     <Flex justify={'center'} mt={8}>
@@ -133,8 +149,24 @@ const ContentCard = ({ profilPic, id, username, likes, caption, image, location,
         </NextLink>
         <Flex justify="space-between">
           <Box>
-            <Icon boxSize={6} as={FaRegHeart} />
-            <Icon onClick={() => setAddComment(!addComment)} cursor="pointer" boxSize={6} ms={4} as={FaRegCommentAlt} />
+            <Icon
+              boxSize={6}
+              as={FaHeart}
+              cursor="pointer"
+              onClick={() => likePost()}
+              color={!like ? 'gray.400' : 'red.400'}
+              id={id}
+              //
+            />
+            <Icon
+              onClick={() => setAddComment(!addComment)}
+              cursor="pointer"
+              boxSize={6}
+              ms={4}
+              as={FaCommentAlt}
+              color="gray.400"
+              //
+            />
           </Box>
           <Text fontSize="xs">{moment(createDate).format('Do MMMM YYYY')}</Text>
         </Flex>
