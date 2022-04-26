@@ -17,6 +17,10 @@ const Profile = () => {
 
   const [edit, setEdit] = useState();
 
+  const refreshPage = () => {
+    window.location.reload();
+  };
+
   const formik = useFormik({
     initialValues: {
       username: authSelector.username,
@@ -59,7 +63,18 @@ const Profile = () => {
       jsCookie.remove('user_data');
       jsCookie.set('user_data', stringifyData);
 
+      const savedUserData = jsCookie.get('user_data');
+      if (savedUserData) {
+        const parsedUserData = JSON.parse(savedUserData);
+
+        dispatch({
+          type: auth_types.LOGIN_USER,
+          payload: parsedUserData,
+        });
+      }
+
       setEdit(!edit);
+      refreshPage();
     } catch (err) {
       console.log(err);
     }

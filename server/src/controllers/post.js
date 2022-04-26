@@ -73,7 +73,7 @@ const postControllers = {
         include: [
           {
             model: Comment,
-            include: [{ model: User, attributes: ['id', 'username'] }],
+            include: [{ model: User, attributes: ['id', 'username'], order: [['createdAt', 'DESC']] }],
           },
           { model: User, attributes: ['username', 'full_name', 'image_url'] },
           { model: User, as: 'user_likes' },
@@ -96,7 +96,8 @@ const postControllers = {
   getPostById: async (req, res) => {
     try {
       const { id } = req.params;
-      const data = await Post.findByPk(id, {
+
+      const allpost = await Post.findByPk(id, {
         include: [
           {
             model: Comment,
@@ -108,7 +109,7 @@ const postControllers = {
 
       return res.status(200).json({
         message: 'get post succsess',
-        result: data,
+        result: allpost,
       });
     } catch (err) {
       console.log(err);
@@ -173,7 +174,7 @@ const postControllers = {
   getAllpostByUserId: async (req, res) => {
     const { id } = req.params;
     try {
-      const allpost = await Post.findAll({
+      const allpost = await Post.findAndCountAll({
         where: {
           UserId: id,
         },

@@ -16,8 +16,6 @@ app.use(express.json());
 
 const { authRoutes, postRoutes, profileRoutes } = require('./routes');
 
-// app.use('/post_images', express.static(`${__dirname}/public/posts`));
-
 //for display image in browser using filename.jpeg
 app.use('/post_images', express.static(`${__dirname}/public/posts`));
 app.use('/profile_picture', express.static(`${__dirname}/public/profile_picture`));

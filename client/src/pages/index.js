@@ -4,11 +4,15 @@ import ContentCard from '../component/ContentCard';
 import { useSelector } from 'react-redux';
 import Navbar from '../component/Navbar';
 import useFetch from '../lib/hooks/usefetch';
+import { useEffect } from 'react';
+import { useRouter } from 'next/router';
 
 export default function Home() {
   const authSelector = useSelector((state) => state.auth);
+  const router = useRouter();
 
   const [data] = useFetch('/posts');
+  console.log(data);
 
   const renderPost = () => {
     return data.map((post) => {
@@ -32,6 +36,11 @@ export default function Home() {
     });
   };
 
+  useEffect(() => {
+    if (!authSelector.id) {
+      router.push('/auth/login');
+    }
+  }, []);
   return (
     <>
       <Navbar />
