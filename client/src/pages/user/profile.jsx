@@ -1,6 +1,6 @@
 // this page for user profile
 
-import { Avatar, Box, Button, Flex, FormControl, FormLabel, Heading, Input, Stack, Textarea } from '@chakra-ui/react';
+import { Avatar, Box, Button, Flex, FormControl, FormLabel, Heading, Icon, Input, Stack, Textarea } from '@chakra-ui/react';
 import { useFormik } from 'formik';
 import { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -8,6 +8,8 @@ import api from '../../lib/api';
 import { auth_types } from '../../redux/types';
 import jsCookie from 'js-cookie';
 import Navbar from '../../component/Navbar';
+import { FaFileUpload } from 'react-icons/fa';
+import { MdCancel } from 'react-icons/md';
 
 const Profile = () => {
   const authSelector = useSelector((state) => state.auth);
@@ -16,6 +18,7 @@ const Profile = () => {
   const dispatch = useDispatch();
 
   const [edit, setEdit] = useState();
+  const [editPic, setEditPic] = useState();
 
   const refreshPage = () => {
     window.location.reload();
@@ -23,12 +26,13 @@ const Profile = () => {
 
   const formik = useFormik({
     initialValues: {
+      id: authSelector.id,
       username: authSelector.username,
       email: authSelector.email,
       full_name: authSelector.full_name,
       bio: authSelector.bio,
       image_url: authSelector.image_url,
-      is_verified: false,
+      is_verified: authSelector.is_verified,
     },
   });
 
@@ -43,18 +47,54 @@ const Profile = () => {
     console.log(event.target.files[0]);
   };
 
-  const uploadContentHandler = async () => {
+  const uploadProfilPicHandler = async () => {
+    const formData = new FormData();
+
+    formData.append('profile_image_file', selectedFile);
+
     try {
-      const formData = new FormData();
-      const { username, bio, email, full_name } = formik.values;
-      console.log(formik.values);
-      // console.log(username, bio, email, full_name);
-      formData.append('username', username || authSelector.username);
-      formData.append('full_name', full_name || authSelector.full_name);
-      formData.append('bio', bio || authSelector.bio);
-      formData.append('email', authSelector.email);
-      formData.append('profile_image_file', selectedFile);
-      const res = await api.patch('/auth/profile', formData);
+      const res = await api.patch('/auth/profile/picture', formData);
+      const data = res.data.result;
+
+      console.log(data);
+      const updateData = { ...formik.values, ...data };
+      console.log(updateData);
+      const stringifyData = JSON.stringify(updateData);
+
+      jsCookie.remove('user_data');
+      jsCookie.set('user_data', stringifyData);
+
+      const savedUserData = jsCookie.get('user_data');
+      if (savedUserData) {
+        const parsedUserData = JSON.parse(savedUserData);
+
+        dispatch({
+          type: auth_types.LOGIN_USER,
+          payload: parsedUserData,
+        });
+      }
+
+      setEditPic(!editPic);
+      // refreshPage();
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  const editProfilData = async () => {
+    console.log(authSelector.id);
+    try {
+      const updateData = {
+        username: formik.values.username ? formik.values.username : authSelector.username,
+        id: authSelector.id,
+        email: authSelector.email,
+        bio: formik.values.bio ? formik.values.bio : authSelector.bio,
+        image_url: authSelector.image_url,
+        is_verified: authSelector.is_verified,
+        full_name: formik.values.full_name ? formik.values.full_name : authSelector.full_name,
+      };
+      console.log(updateData);
+
+      const res = await api.patch('/auth/profile', updateData);
       const data = res.data.result;
 
       console.log(data);
@@ -74,7 +114,7 @@ const Profile = () => {
       }
 
       setEdit(!edit);
-      refreshPage();
+      // refreshPage();
     } catch (err) {
       console.log(err);
     }
@@ -89,52 +129,68 @@ const Profile = () => {
             <Heading mt={3} ms={2} lineHeight={1.1} fontSize={{ base: 'xl', sm: '2xl' }} justifyContent="space-between">
               User Profile
             </Heading>
-            {edit ? (
-              <Button size="xs" mt={3} me={2} onClick={() => setEdit(!edit)} colorScheme="orange">
-                cancel
-              </Button>
-            ) : (
-              <Button size="xs" mt={3} me={2} onClick={() => setEdit(!edit)} colorScheme="messenger">
-                edit
-              </Button>
-            )}
           </Flex>
           <Flex mt={5} justify={'center'}>
             <Avatar size="xl" src={authSelector.image_url}></Avatar>
-            <Input accept="image/png, image/jpeg" display="none" type="file" id="image_url" placeholder="Please enter domain" name="image_url" onChange={handelFile} ref={inputFileRef} />
           </Flex>
-          <Flex mt={5} justify={'center'}>
-            <Button size="xs" hidden={edit ? false : true} onClick={() => inputFileRef.current.click()} colorScheme="facebook">
-              choose File
-            </Button>
-          </Flex>
+          {editPic ? (
+            <>
+              <Flex mt={5} justify={'center'}>
+                <Input accept="image/png, image/jpeg" display="none" type="file" id="image_url" name="image_url" onChange={handelFile} ref={inputFileRef} />
+                <Button size="xs" onClick={() => inputFileRef.current.click()} colorScheme="facebook">
+                  choose File
+                </Button>
+              </Flex>
+              <Flex justify={'center'}>
+                <Box>
+                  <Icon as={FaFileUpload} boxSize={6} onClick={() => uploadProfilPicHandler()} color="green" />
+                  <Icon ms="4" as={MdCancel} boxSize={6} onClick={() => setEditPic(!editPic)} color="red.600" />
+                </Box>
+              </Flex>
+            </>
+          ) : (
+            <Flex justify="center">
+              <Button size="xs" onClick={() => setEditPic(!editPic)} colorScheme="facebook">
+                Change Profile Picture
+              </Button>
+            </Flex>
+          )}
 
           <Box boxSizing="sm" p={4}>
             <Stack>
               <FormControl>
                 <FormLabel fontSize="xs">Username</FormLabel>
-                <Input size="xs" fontSize="sm" id="username" name="username" defaultValue={authSelector.username} isDisabled={edit ? false : true} onChange={inputHandler} />
+                <Input size="xs" fontSize="sm" id="username" name="username" isDisabled={edit ? false : true} onChange={inputHandler} defaultValue={authSelector.username} />
 
                 <FormLabel mt={2} fontSize="xs">
                   Full Name
                 </FormLabel>
-                <Input size="xs" fontSize="sm" defaultValue={authSelector.full_name} isDisabled={edit ? false : true} id="full_name" name="full_name" onChange={inputHandler} />
+                <Input size="xs" fontSize="sm" isDisabled={edit ? false : true} id="full_name" name="full_name" onChange={inputHandler} defaultValue={authSelector.full_name} />
 
                 <FormLabel fontSize="xs" mt={2}>
                   Email Address
                 </FormLabel>
-                <Input size="xs" fontSize="sm" defaultValue={authSelector.email} isDisabled />
+                <Input size="xs" fontSize="sm" isDisabled onChange={inputHandler} defaultValue={authSelector.email} />
 
                 <FormLabel fontSize="xs" mt={2}>
                   Bio
                 </FormLabel>
-                <Textarea size="xs" fontSize="sm" id="bio" name="bio" defaultValue={authSelector.bio} isDisabled={edit ? false : true} onChange={inputHandler} />
+                <Textarea size="xs" fontSize="sm" id="bio" name="bio" isDisabled={edit ? false : true} onChange={inputHandler} defaultValue={authSelector.bio} />
               </FormControl>
             </Stack>
           </Box>
 
           <Flex justify={'end'}>
-            <Button mb={3} me={3} size="sm" hidden={edit ? false : true} onClick={uploadContentHandler} colorScheme="facebook">
+            {edit ? (
+              <Button size="sm" mb={3} me={3} onClick={() => setEdit(!edit)} colorScheme="orange">
+                cancel
+              </Button>
+            ) : (
+              <Button size="sm" mb={3} me={3} onClick={() => setEdit(!edit)} colorScheme="messenger">
+                edit
+              </Button>
+            )}
+            <Button mb={3} me={3} size="sm" hidden={edit ? false : true} onClick={editProfilData} colorScheme="facebook">
               Submit
             </Button>
           </Flex>

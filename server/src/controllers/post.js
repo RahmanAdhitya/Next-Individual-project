@@ -55,6 +55,35 @@ const postControllers = {
       });
     }
   },
+  editPost: async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { caption } = req.body;
+
+      const editPost = await Post.update(caption, {
+        where: {
+          id,
+          UserId: req.token.id,
+        },
+      });
+
+      if (!editPost) {
+        return res.status(200).json({
+          message: 'post not found',
+        });
+      }
+
+      return res.status(201).json({
+        message: 'edit caption success',
+        result: editPost,
+      });
+    } catch (err) {
+      console.log(err);
+      return res.status(500).json({
+        message: 'Server error',
+      });
+    }
+  },
   getAllpost: async (req, res) => {
     try {
       const { _limit = 10, _page = 1, _sortBy = '', _sortDir = '' } = req.query;
@@ -204,9 +233,6 @@ const postControllers = {
       where: {
         PostId,
         UserId: req.token.id,
-      },
-      defaults: {
-        ...req.body,
       },
     });
 

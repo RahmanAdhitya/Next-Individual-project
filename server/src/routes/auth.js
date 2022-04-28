@@ -9,14 +9,16 @@ router.get('/:id', loginAuthorizedToken, authControllers.getUserData);
 router.get('/user/:id', loginAuthorizedToken, authControllers.getUserDataById);
 
 router.patch(
-  '/profile',
+  '/profile/picture',
   loginAuthorizedToken,
   fileUploader({
     destinationFolder: 'profile_picture',
     fileType: 'image',
     prefix: 'Profile',
   }).single('profile_image_file'),
-  authControllers.profileCreateAndEditProfile
+  authControllers.uploadProfilPic
 );
+
+router.patch('/profile', loginAuthorizedToken, authControllers.editProfile);
 
 module.exports = router;

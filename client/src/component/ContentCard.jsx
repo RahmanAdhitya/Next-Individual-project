@@ -30,12 +30,14 @@ import api from '../lib/api';
 import { FiSend } from 'react-icons/fi';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 import { MdDeleteForever, MdShare } from 'react-icons/md';
+import { BiEditAlt } from 'react-icons/bi';
 import { useSelector } from 'react-redux';
 import moment from 'moment';
 
 const ContentCard = ({ profilPic, id, username, likes, caption, image, location, comment, userId, createDate }) => {
   const [addComment, setAddComment] = useState(true);
-  const [like, setLike] = useState('false');
+  const [editCaption, setEditCaption] = useState(false);
+  const [like, setLike] = useState(false);
   const authSelector = useSelector((state) => state.auth);
 
   const refreshPage = () => {
@@ -46,6 +48,7 @@ const ContentCard = ({ profilPic, id, username, likes, caption, image, location,
       PostId: id,
       UserId: '',
       comment: '',
+      caption: '',
     },
   });
 
@@ -55,7 +58,12 @@ const ContentCard = ({ profilPic, id, username, likes, caption, image, location,
   };
 
   const postCommentHandler = async () => {
-    await api.post(`/posts/${id}-comment`, formik.values);
+    const dataComment = {
+      PostId: formik.values.PostId,
+      UserId: formik.values.UserId,
+      comment: formik.values.comment,
+    };
+    await api.post(`/posts/${id}-comment`, dataComment);
 
     refreshPage();
   };
@@ -87,6 +95,12 @@ const ContentCard = ({ profilPic, id, username, likes, caption, image, location,
   const likePost = async () => {
     console.log(id);
     await api.patch(`posts/${id}/like`);
+    setLike(!like);
+  };
+
+  const editPost = async () => {
+    await api.patch(`posts/${id}/caption`, formik.values.caption);
+    refreshPage();
   };
 
   useEffect(() => {
@@ -174,11 +188,41 @@ const ContentCard = ({ profilPic, id, username, likes, caption, image, location,
           <Text fontWeight="medium" fontSize="small">
             {likes.toLocaleString()} Likes
           </Text>
-          <Box>
+          <Flex justify="space-between">
             <Text fontSize="sm">
               <span style={{ fontWeight: 'bold' }}>{username}</span>&nbsp;{caption}
             </Text>
-          </Box>
+            <Icon
+              as={BiEditAlt}
+              hidden={authSelector.id !== userId}
+              onClick={() => setEditCaption(!editCaption)}
+              //
+            />
+          </Flex>
+          {editCaption ? (
+            <InputGroup>
+              <FormLabel htmlFor="caption"></FormLabel>
+              <Input
+                id="caption"
+                placeholder="caption"
+                name="caption"
+                onChange={inputHandler}
+                variant="flushed"
+                //
+              />
+
+              <InputRightElement>
+                <Icon
+                  as={FiSend}
+                  cursor="pointer"
+                  onClick={() => editPost()}
+                  //
+                />
+              </InputRightElement>
+            </InputGroup>
+          ) : (
+            <></>
+          )}
           <Box>{renderComment()}</Box>
         </Box>
         <Box hidden={addComment ? true : false}>

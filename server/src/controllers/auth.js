@@ -68,7 +68,6 @@ const authControllers = {
 
       const token = generateToken({
         id: findUser.id,
-        role: findUser.role,
       });
 
       // await mailer({
@@ -91,13 +90,9 @@ const authControllers = {
       });
     }
   },
-  profileCreateAndEditProfile: async (req, res) => {
+  editProfile: async (req, res) => {
     try {
-      const { bio, username, email, full_name } = req.body;
-
-      const upLoadFileDomain = process.env.UPLOAD_FILE_DOMAIN;
-      const filepath = 'profile_picture';
-      const { filename } = req.file;
+      const { id, bio, username, email, full_name, image_url, is_verified } = req.body;
 
       // const isUsernameEmailRegisterd = await User.findOne({
       //   where: { username },
@@ -108,8 +103,34 @@ const authControllers = {
       //     message: 'username is not available',
       //   });
       // }
-      const updateData = { image_url: `${upLoadFileDomain}/${filepath}/${filename}`, username, bio, email, full_name };
+      const updateData = { id, username, bio, email, full_name, image_url, is_verified };
+      console.log(updateData);
+      const newProfile = await User.update(updateData, { where: { id: req.token.id } });
 
+      if (!newProfile) {
+        return res.status(400).json({
+          message: 'data failed',
+        });
+      }
+
+      return res.status(201).json({
+        message: 'profile create or edit succses',
+        result: { ...updateData },
+      });
+    } catch (err) {
+      return res.status(500).json({
+        message: 'server error',
+      });
+    }
+  },
+  uploadProfilPic: async (req, res) => {
+    try {
+      const upLoadFileDomain = process.env.UPLOAD_FILE_DOMAIN;
+      const filepath = 'profile_picture';
+      const { filename } = req.file;
+
+      const updateData = { image_url: `${upLoadFileDomain}/${filepath}/${filename}` };
+      console.log(updateData);
       const newProfile = await User.update(updateData, { where: { id: req.token.id } });
 
       if (!newProfile) {
