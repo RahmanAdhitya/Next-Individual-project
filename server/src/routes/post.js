@@ -23,6 +23,6 @@ router.delete('/:id', loginAuthorizedToken, postControllers.deletePost);
 router.post('/:id-comment', loginAuthorizedToken, postControllers.commentAPost);
 router.get('/:PostId/like', loginAuthorizedToken, postControllers.likeSatus);
 router.patch('/:PostId/like', loginAuthorizedToken, postControllers.likeApost); // add alike in a post
-router.patch('/:PostId/caption', loginAuthorizedToken, postControllers.editPost);
+router.patch('/:id/caption/', loginAuthorizedToken, postControllers.editPost);
 
 module.exports = router;

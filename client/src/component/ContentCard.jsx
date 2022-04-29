@@ -99,8 +99,9 @@ const ContentCard = ({ profilPic, id, username, likes, caption, image, location,
   };
 
   const editPost = async () => {
-    await api.patch(`posts/${id}/caption`, formik.values.caption);
-    refreshPage();
+    console.log(formik.values.caption);
+    await api.patch(`posts/${id}/caption`, { caption: formik.values.caption });
+    // refreshPage();
   };
 
   useEffect(() => {

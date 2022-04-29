@@ -59,13 +59,18 @@ const postControllers = {
     try {
       const { id } = req.params;
       const { caption } = req.body;
+      console.log(caption);
+      console.log(id);
 
-      const editPost = await Post.update(caption, {
-        where: {
-          id,
-          UserId: req.token.id,
-        },
-      });
+      const editPost = await Post.update(
+        { caption },
+        {
+          where: {
+            id,
+            UserId: req.token.id,
+          },
+        }
+      );
 
       if (!editPost) {
         return res.status(200).json({
@@ -75,7 +80,7 @@ const postControllers = {
 
       return res.status(201).json({
         message: 'edit caption success',
-        result: editPost,
+        result: caption,
       });
     } catch (err) {
       console.log(err);
