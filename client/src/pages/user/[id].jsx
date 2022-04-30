@@ -5,18 +5,22 @@ import Navbar from '../../component/Navbar';
 import { useEffect } from 'react';
 import useFetch from '../../lib/hooks/usefetch';
 import useFetchUser from '../../lib/hooks/useFetchUser';
+import moment from 'moment';
+import NextLink from 'next/link';
 
 const UserDetails = () => {
   const router = useRouter();
 
   const { id } = router.query;
-  console.log(id);
-  const [data] = useFetch(`/posts/user/${id}`);
-  console.log(data);
   const [profile] = useFetchUser(`/auth/user/${id}`);
-  console.log(id);
+  const [activitiesData] = useFetchUser(`/posts/like/${id}`);
+  // console.log(id);
+  // console.log(activitiesData);
+  const [data] = useFetch(`/posts/user/${id}`);
+  // console.log(data);
 
   const renderPost = () => {
+    console.log(router.isReady);
     return data.map((post) => {
       return (
         <Box mt={4}>
@@ -40,7 +44,7 @@ const UserDetails = () => {
 
   const renderProfile = () => {
     return (
-      <Box w="xs" padding={3} ms="5" mt={8} shadow="inner" bgColor="gray.100" borderRadius="4">
+      <Box w={200} padding={3} ms="5" mt={8} shadow="inner" bgColor="gray.100" borderRadius="4">
         <Flex justify="center">
           <Avatar size="xl" src={profile.image_url} border="3px solid teal" />
         </Flex>
@@ -50,22 +54,32 @@ const UserDetails = () => {
       </Box>
     );
   };
+  const renderActivities = () => {
+    return activitiesData.map((val) => {
+      return (
+        <NextLink href={`/posts/${val.Post.id}`}>
+          <Box cursor="pointer" padding={3} mt="2" shadow="lg" bgColor="gray.100" borderRadius="4">
+            <Text textAlign="center">{`${profile.username} loved ${val.Post.User.username} Post, ${moment(val.createdAt).startOf('day').fromNow()}`}</Text>
+          </Box>
+        </NextLink>
+      );
+    });
+  };
 
   useEffect(() => {
     if (router.isReady) {
     }
-  }, [router.isReady.data]);
+  }, [router.isReady]);
 
   return (
     <Box>
       <Navbar />
-      <Flex>
-        <Box>{renderProfile}</Box>
-        <Spacer />
-        <Flex justify={'center'}>
-          <Box>{renderPost()}</Box>
-        </Flex>
-        <Spacer />
+      <Flex justify="space-between">
+        <Box>{renderProfile()}</Box>
+        <Box>{renderPost()}</Box>
+        <Box mt={8} me={5}>
+          {renderActivities()}
+        </Box>
       </Flex>
     </Box>
   );

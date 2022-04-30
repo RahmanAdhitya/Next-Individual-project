@@ -283,5 +283,30 @@ const postControllers = {
       });
     }
   },
+  getAllLovedPost: async (req, res) => {
+    try {
+      const { UserId } = req.params;
+      const findLikePost = await Like.findAll({
+        where: { UserId },
+        include: [
+          {
+            model: Post,
+            include: [{ model: User, attributes: ['id', 'username'] }],
+          },
+        ],
+        order: [['createdAt', 'DESC']],
+      });
+
+      return res.status(200).json({
+        message: 'get all post succsess',
+        result: findLikePost,
+      });
+    } catch (err) {
+      console.log(err);
+      return res.status(500).json({
+        message: 'Server error',
+      });
+    }
+  },
 };
 module.exports = postControllers;

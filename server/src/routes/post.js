@@ -17,11 +17,12 @@ router.post(
 router.get('/', loginAuthorizedToken, postControllers.getAllpost);
 router.get('/:id', loginAuthorizedToken, postControllers.getPostById);
 router.get('/user/:id', loginAuthorizedToken, postControllers.getAllpostByUserId);
+router.get('/:PostId/like', loginAuthorizedToken, postControllers.likeSatus);
+router.get('/like/:UserId', loginAuthorizedToken, postControllers.getAllLovedPost);
 
 router.delete('/:id', loginAuthorizedToken, postControllers.deletePost);
 
 router.post('/:id-comment', loginAuthorizedToken, postControllers.commentAPost);
-router.get('/:PostId/like', loginAuthorizedToken, postControllers.likeSatus);
 router.patch('/:PostId/like', loginAuthorizedToken, postControllers.likeApost); // add alike in a post
 router.patch('/:id/caption/', loginAuthorizedToken, postControllers.editPost);
 

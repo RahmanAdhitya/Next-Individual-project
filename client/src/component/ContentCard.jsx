@@ -96,6 +96,7 @@ const ContentCard = ({ profilPic, id, username, likes, caption, image, location,
     console.log(id);
     await api.patch(`posts/${id}/like`);
     setLike(!like);
+    refreshPage();
   };
 
   const editPost = async () => {
