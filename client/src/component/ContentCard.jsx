@@ -88,7 +88,6 @@ const ContentCard = ({ profilPic, id, username, likes, caption, image, location,
 
   const likeStatus = async () => {
     const res = await api.get(`posts/${id}/like`);
-    console.log(res.data.result);
     setLike(res.data.result);
   };
 

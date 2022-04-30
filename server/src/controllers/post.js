@@ -91,7 +91,7 @@ const postControllers = {
   },
   getAllpost: async (req, res) => {
     try {
-      const { _limit = 10, _page = 1, _sortBy = '', _sortDir = '' } = req.query;
+      const { _limit = 5, _page = 1, _sortBy = '', _sortDir = '' } = req.query;
 
       delete req.query._limit;
       delete req.query._page;
