@@ -73,7 +73,7 @@ const ContentCard = ({ profilPic, id, username, likes, caption, image, location,
       return (
         <Flex alignItems="center" justify="space-between">
           <Text fontSize="sm">
-            <span style={{ fontWeight: 'bold' }}>{comment.User.username}</span>
+            <span style={{ fontWeight: 'bold' }}>{comment.User?.username}</span>
             &nbsp;{comment.comment}
           </Text>
           <Text fontSize="xx-small">{moment(comment.createdAt).startOf('day').fromNow()}</Text>

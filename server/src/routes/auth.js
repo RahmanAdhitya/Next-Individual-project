@@ -21,4 +21,11 @@ router.patch(
 
 router.patch('/profile', loginAuthorizedToken, authControllers.editProfile);
 
+// verify account
+router.post('/resend-verification', loginAuthorizedToken, authControllers.resendVerificationEmail);
+
+//password change
+router.post('/forgot-password-email', authControllers.sendForgotPasswordEmail);
+router.patch('/change-password-forgot', authControllers.changeUserForgotPassword);
+
 module.exports = router;

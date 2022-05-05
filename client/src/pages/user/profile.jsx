@@ -20,10 +20,6 @@ const Profile = () => {
   const [edit, setEdit] = useState();
   const [editPic, setEditPic] = useState();
 
-  const refreshPage = () => {
-    window.location.reload();
-  };
-
   const formik = useFormik({
     initialValues: {
       id: authSelector.id,
@@ -120,15 +116,27 @@ const Profile = () => {
     }
   };
 
+  const resendVerifiedEmail = async () => {
+    try {
+      await api.post('/auth/resend-verification');
+    } catch (err) {
+      console.log(err);
+    }
+  };
   return (
     <>
       <Navbar />
       <Flex boxSizing="sm" justify={'center'} mt={4}>
         <Stack borderRadius={10} shadow="dark-lg">
-          <Flex justifyContent="space-between">
-            <Heading mt={3} ms={2} lineHeight={1.1} fontSize={{ base: 'xl', sm: '2xl' }} justifyContent="space-between">
+          <Flex justifyContent="center">
+            <Heading mt={3} lineHeight={1.1} fontSize={{ base: 'lg', sm: 'xl' }}>
               User Profile
             </Heading>
+          </Flex>
+          <Flex hidden={authSelector.is_verified} justify={'center'}>
+            <Button size="xs" colorScheme="yellow" cursor="pointer" onClick={() => resendVerifiedEmail()}>
+              verifiy Account
+            </Button>
           </Flex>
           <Flex mt={5} justify={'center'}>
             <Avatar size="xl" src={authSelector.image_url}></Avatar>

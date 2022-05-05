@@ -29,15 +29,15 @@ export default function Home() {
         <Box m={4}>
           <ContentCard
             caption={post.caption}
-            profilPic={post.User.image_url}
+            profilPic={post?.User?.image_url}
             userId={post.UserId}
-            username={post.User.username}
-            location={post.location}
-            likes={post.like_count}
-            image={post.image_url}
+            username={post?.User?.username}
+            location={post?.location}
+            likes={post?.like_count}
+            image={post?.image_url}
             id={post.id}
-            comment={post.Comments}
-            createDate={post.createdAt}
+            comment={post?.Comments}
+            createDate={post?.createdAt}
             //
           />
         </Box>
