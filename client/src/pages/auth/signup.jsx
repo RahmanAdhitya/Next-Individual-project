@@ -1,6 +1,6 @@
 // this file for login layout
 
-import { Icon, FormControl, FormLabel, Stack, Input, Box, Container, Text, Button, Divider, HStack, Spacer, InputGroup, InputRightElement, FormHelperText, useToast } from '@chakra-ui/react';
+import { Icon, FormControl, FormLabel, Stack, Input, Box, Container, Text, Button, InputGroup, InputRightElement, FormHelperText, useToast, Alert, AlertIcon } from '@chakra-ui/react';
 import { useFormik } from 'formik';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -44,7 +44,13 @@ const signupPage = () => {
           if (values.password != values.repeatPassword) {
             throw new Error('password not match');
           }
-          return await api.post('/auth/register', values);
+          await api.post('/auth/register', values);
+          return (
+            <Alert status="success">
+              <AlertIcon />
+              your account has been created, check your email for verifiy your new account
+            </Alert>
+          );
         } catch (err) {
           console.log(err);
           toast({

@@ -4,6 +4,7 @@ const fileUploader = require('../lib/uploader');
 const { loginAuthorizedToken } = require('../middlewares/authMiddleware');
 
 router.post('/register', authControllers.registerUser);
+router.get('/verify/:token', authControllers.verifyUser);
 router.post('/login', authControllers.loginUser);
 router.get('/:id', loginAuthorizedToken, authControllers.getUserData);
 router.get('/user/:id', loginAuthorizedToken, authControllers.getUserDataById);

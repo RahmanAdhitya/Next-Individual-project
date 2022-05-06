@@ -303,7 +303,7 @@ const authControllers = {
         { is_verified: true },
         {
           where: {
-            id: findToken.user_id,
+            id: findToken.UserId,
           },
         }
       );
@@ -311,7 +311,10 @@ const authControllers = {
       findToken.is_valid = false;
       findToken.save();
 
-      return res.redirect(`http://localhost:3000/verification-success?referral=${token}`);
+      return res.redirect(`http://localhost:3000/verification`);
+      // return res.status(200).json({
+      //   message: 'your account has been verified',
+      // });
     } catch (err) {
       console.log(err);
       return res.status(500).json({
