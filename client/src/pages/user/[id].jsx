@@ -1,8 +1,6 @@
 import { Avatar, Box, Flex, Spacer, Stack, Text } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import ContentCard from '../../component/ContentCard';
-import Navbar from '../../component/Navbar';
-import { useEffect } from 'react';
 import useFetch from '../../lib/hooks/usefetch';
 import useFetchUser from '../../lib/hooks/useFetchUser';
 import moment from 'moment';
@@ -66,14 +64,8 @@ const UserDetails = () => {
     });
   };
 
-  useEffect(() => {
-    if (router.isReady) {
-    }
-  }, [router.isReady]);
-
   return (
     <Box>
-      <Navbar />
       <Flex justify="space-between">
         <Box>{renderProfile()}</Box>
         <Box>{renderPost()}</Box>

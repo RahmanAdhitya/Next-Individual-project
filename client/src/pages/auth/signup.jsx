@@ -46,7 +46,14 @@ const signupPage = () => {
           }
           await api.post('/auth/register', values);
 
-          router.push('/');
+          toast({
+            title: 'Account created.',
+            description: 'your account has been created successfully, check your email for verify your new account',
+            status: 'success',
+            duration: 9000,
+            isClosable: true,
+          });
+          router.push('/auth/login');
         } catch (err) {
           console.log(err);
           toast({

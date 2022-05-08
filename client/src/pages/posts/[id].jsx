@@ -4,7 +4,6 @@ import { BiPlus, BiMinus, BiHeart, BiCopy } from 'react-icons/bi';
 import { FacebookIcon, FacebookShareButton, LinkedinIcon, LinkedinShareButton, TwitterIcon, TwitterShareButton, WhatsappIcon, WhatsappShareButton } from 'react-share';
 import ContentCard from '../../component/ContentCard';
 import axios from 'axios';
-import Navbar from '../../component/Navbar';
 import Page from '../../component/page';
 import { useEffect } from 'react';
 import { WEB_URL } from '../../configs/url';
@@ -70,7 +69,6 @@ const postDetail = ({ post }) => {
       //
     >
       <Box>
-        <Navbar />
         {shareToggle()}
         <ContentCard
           caption={post.caption}

@@ -10,6 +10,7 @@ import jsCookie from 'js-cookie';
 import Navbar from '../../component/Navbar';
 import { FaFileUpload } from 'react-icons/fa';
 import { MdCancel } from 'react-icons/md';
+import useAuthorized from '../../lib/hooks/useAuthorized';
 
 const Profile = () => {
   const authSelector = useSelector((state) => state.auth);
@@ -130,9 +131,9 @@ const Profile = () => {
       console.log(err);
     }
   };
+
   return (
     <>
-      <Navbar />
       <Flex boxSizing="sm" justify={'center'} mt={4}>
         <Stack borderRadius={10} shadow="dark-lg">
           <Flex justifyContent="center">

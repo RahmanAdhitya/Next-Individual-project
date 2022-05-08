@@ -88,9 +88,11 @@ const loginPage = () => {
           </form>
 
           <Stack mt={3} spacing={3}>
-            <Button variant="link" colorScheme="blue" size="sm">
-              Forgot password?
-            </Button>
+            <Link href="./requestResetPassword">
+              <Button variant="link" colorScheme="blue" size="sm">
+                Forgot password?
+              </Button>
+            </Link>
             <HStack>
               <Divider />
               <Text fontSize="sm" whiteSpace="nowrap">

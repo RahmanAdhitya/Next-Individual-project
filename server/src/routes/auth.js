@@ -27,6 +27,6 @@ router.post('/resend-verification', loginAuthorizedToken, authControllers.resend
 
 //password change
 router.post('/forgot-password-email', authControllers.sendForgotPasswordEmail);
-router.patch('/change-password-forgot', authControllers.changeUserForgotPassword);
+router.patch('/reset-password/:token', authControllers.changeUserForgotPassword);
 
 module.exports = router;

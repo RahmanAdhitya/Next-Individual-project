@@ -49,4 +49,5 @@ module.exports = {
   Comment,
   Like,
   VerificationToken,
+  ForgotPasswordToken,
 };

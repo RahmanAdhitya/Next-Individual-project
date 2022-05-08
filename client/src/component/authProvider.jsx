@@ -4,15 +4,18 @@
 
 import { useDispatch } from 'react-redux';
 import { auth_types } from '../redux/types';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import jsCookie from 'js-cookie';
 import { useRouter } from 'next/router';
+import Navbar from './Navbar';
 
 const AuthProvider = ({ children }) => {
   const dispatch = useDispatch();
   const router = useRouter();
+  const [hidden, setHidden] = useState(false);
 
   useEffect(() => {
+    console.log('render1');
     const token = jsCookie.get('auth_token');
     const savedUserData = jsCookie.get('user_data');
     if (savedUserData) {
@@ -25,11 +28,19 @@ const AuthProvider = ({ children }) => {
     }
 
     if (!token) {
-      // router.push('/auth/login' || 'auth/register');
+      // if (router.pathname !== '/auth/login' || router.pathname !== 'auth/signup' || router.pathname !== 'auth/resetPassword') {
+      //   router.push('/auth/login');
+      //   setHidden(true);
+      // }
     }
   }, []);
 
-  return <>{children}</>;
+  return (
+    <>
+      <Navbar hidden={hidden} />
+      {children}
+    </>
+  );
 };
 
 export default AuthProvider;

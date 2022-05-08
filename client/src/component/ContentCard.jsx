@@ -69,14 +69,14 @@ const ContentCard = ({ profilPic, id, username, likes, caption, image, location,
   };
 
   const renderComment = () => {
-    return comment.map((comment) => {
+    return comment?.map((comment) => {
       return (
         <Flex alignItems="center" justify="space-between">
           <Text fontSize="sm">
-            <span style={{ fontWeight: 'bold' }}>{comment.User?.username}</span>
-            &nbsp;{comment.comment}
+            <span style={{ fontWeight: 'bold' }}>{comment?.User?.username}</span>
+            &nbsp;{comment?.comment}
           </Text>
-          <Text fontSize="xx-small">{moment(comment.createdAt).startOf('day').fromNow()}</Text>
+          <Text fontSize="xx-small">{moment(comment?.createdAt).startOf('day').fromNow()}</Text>
         </Flex>
       );
     });
@@ -88,7 +88,7 @@ const ContentCard = ({ profilPic, id, username, likes, caption, image, location,
 
   const likeStatus = async () => {
     const res = await api.get(`posts/${id}/like`);
-    setLike(res.data.result);
+    setLike(res?.data?.result);
   };
 
   const likePost = async () => {
@@ -187,7 +187,7 @@ const ContentCard = ({ profilPic, id, username, likes, caption, image, location,
         </Flex>
         <Box>
           <Text fontWeight="medium" fontSize="small">
-            {likes.toLocaleString()} Likes
+            {likes?.toLocaleString()} Likes
           </Text>
           <Flex justify="space-between">
             <Text fontSize="sm">

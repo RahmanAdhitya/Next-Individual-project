@@ -1,5 +1,5 @@
 const { Op } = require('sequelize');
-const { User, VerificationToken } = require('../lib/sequelize');
+const { User, VerificationToken, ForgotPasswordToken } = require('../lib/sequelize');
 const bcrypt = require('bcrypt');
 const { generateToken, verifyToken } = require('../lib/jwt');
 const mailer = require('../lib/mailer');
@@ -316,9 +316,6 @@ const authControllers = {
       findToken.save();
 
       return res.redirect(`http://localhost:3000/verification`);
-      // return res.status(200).json({
-      //   message: 'your account has been verified',
-      // });
     } catch (err) {
       console.log(err);
       return res.status(500).json({
@@ -336,13 +333,14 @@ const authControllers = {
         },
       });
 
+      console.log(findUser.id);
       const passwordToken = nanoid(40);
 
       await ForgotPasswordToken.update(
         { is_valid: false },
         {
           where: {
-            user_id: findUser.id,
+            UserId: findUser.id,
             is_valid: true,
           },
         }
@@ -352,10 +350,10 @@ const authControllers = {
         token: passwordToken,
         valid_until: moment().add(1, 'hour'),
         is_valid: true,
-        user_id: findUser.id,
+        UserId: findUser.id,
       });
 
-      const forgotPasswordLink = `http://localhost:3000/forgot-password?fp_token=${passwordToken}`;
+      const forgotPasswordLink = `http://localhost:3000/reset-password/${passwordToken}`;
 
       const template = fs.readFileSync(__dirname + '/../templates/forgot.html').toString();
 
@@ -383,17 +381,23 @@ const authControllers = {
   },
   changeUserForgotPassword: async (req, res) => {
     try {
-      const { password, forgotPasswordToken } = req.body;
+      const { password } = req.body;
+      const { token } = req.params;
+      console.log(password);
+
+      console.log(token);
 
       const findToken = await ForgotPasswordToken.findOne({
         where: {
-          token: forgotPasswordToken,
+          token,
           is_valid: true,
           valid_until: {
             [Op.gt]: moment().utc(),
           },
         },
       });
+
+      console.log(findToken);
 
       if (!findToken) {
         return res.status(400).json({
@@ -407,7 +411,17 @@ const authControllers = {
         { password: hashedPassword },
         {
           where: {
-            id: findToken.user_id,
+            id: findToken.UserId,
+          },
+        }
+      );
+
+      await ForgotPasswordToken.update(
+        { is_valid: false },
+        {
+          where: {
+            UserId: findToken.UserId,
+            is_valid: true,
           },
         }
       );

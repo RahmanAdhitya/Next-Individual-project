@@ -10,7 +10,7 @@ import PostContent from './PostContent';
 import Link from 'next/link';
 import { ImHome } from 'react-icons/im';
 
-const Navbar = () => {
+const Navbar = ({ hidden }) => {
   const authSelector = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const router = useRouter();
@@ -26,7 +26,7 @@ const Navbar = () => {
   };
 
   return (
-    <Flex height="20" bgColor="teal.400" alignItems="center" justifyContent="space-between">
+    <Flex hidden={hidden} height="20" bgColor="teal.400" alignItems="center" justifyContent="space-between">
       <HStack>
         <Menu>
           <MenuButton>
