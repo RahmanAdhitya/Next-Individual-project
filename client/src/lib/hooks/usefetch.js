@@ -20,8 +20,8 @@ const useFetch = (routes = '', pageNumber = 0) => {
             _page: pageNumber,
           },
         });
-        setData((prevData) => [...prevData, ...res.data.result.rows]);
-        setCount(res.data.result.count);
+        setData((prevData) => [...prevData, ...res?.data?.result?.rows]);
+        setCount(res?.data?.result?.count);
         console.log(res.data.result);
       } catch (err) {
         console.log(err);

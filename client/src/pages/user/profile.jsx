@@ -1,6 +1,6 @@
 // this page for user profile
 
-import { Avatar, Box, Button, Flex, FormControl, FormLabel, Heading, Icon, Input, Stack, Textarea } from '@chakra-ui/react';
+import { Alert, Avatar, Box, Button, Flex, FormControl, FormLabel, Heading, Icon, Input, Stack, Textarea } from '@chakra-ui/react';
 import { useFormik } from 'formik';
 import { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -119,6 +119,13 @@ const Profile = () => {
   const resendVerifiedEmail = async () => {
     try {
       await api.post('/auth/resend-verification');
+
+      return (
+        <Alert status="success" variant="subtle">
+          <AlertIcon />
+          Check your email, for verify your account
+        </Alert>
+      );
     } catch (err) {
       console.log(err);
     }

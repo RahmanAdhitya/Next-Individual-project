@@ -45,11 +45,11 @@ export default function Home() {
     });
   };
 
-  // useEffect(() => {
-  //   if (!authSelector.id) {
-  //     router.push('/auth/login');
-  //   }
-  // }, []);
+  useEffect(() => {
+    if (!authSelector.id) {
+      router.push('/auth/login');
+    }
+  }, []);
   return (
     <>
       <Navbar />

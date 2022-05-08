@@ -45,12 +45,8 @@ const signupPage = () => {
             throw new Error('password not match');
           }
           await api.post('/auth/register', values);
-          return (
-            <Alert status="success">
-              <AlertIcon />
-              your account has been created, check your email for verifiy your new account
-            </Alert>
-          );
+
+          router.push('/');
         } catch (err) {
           console.log(err);
           toast({

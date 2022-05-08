@@ -228,7 +228,7 @@ const authControllers = {
     try {
       const { id } = req.token; // JWT
 
-      await VerificationToken.update(
+      const findToken = await VerificationToken.update(
         { is_valid: false },
         {
           where: {
@@ -237,6 +237,10 @@ const authControllers = {
           },
         }
       );
+
+      console.log(findToken);
+      if (!findToken) {
+      }
 
       const verificationToken = nanoid(40);
 
@@ -248,9 +252,9 @@ const authControllers = {
       });
 
       const findUser = await User.findByPk(id);
-      console.log(findUser);
 
       const verificationLink = `http://localhost:2060/auth/verify/${verificationToken}`;
+      console.log(verificationLink);
 
       const template = fs.readFileSync(__dirname + '/../templates/verify.html').toString();
 
