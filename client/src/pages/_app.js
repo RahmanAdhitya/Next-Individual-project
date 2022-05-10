@@ -1,8 +1,9 @@
 import { ChakraProvider } from '@chakra-ui/react';
-import { Provider } from 'react-redux';
+import { Provider, useSelector } from 'react-redux';
 import store from '../redux/store';
 import AuthProvider from '../component/authProvider';
 import NetworkMessageWrapper from '../component/NetworkMesaageWrapper';
+import Navbar from '../component/Navbar';
 
 function MyApp({ Component, pageProps }) {
   return (
@@ -10,6 +11,7 @@ function MyApp({ Component, pageProps }) {
       <ChakraProvider>
         <NetworkMessageWrapper>
           <AuthProvider>
+            <Navbar />
             <Component {...pageProps} />
           </AuthProvider>
         </NetworkMessageWrapper>

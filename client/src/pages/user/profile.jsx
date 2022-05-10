@@ -10,7 +10,6 @@ import jsCookie from 'js-cookie';
 import Navbar from '../../component/Navbar';
 import { FaFileUpload } from 'react-icons/fa';
 import { MdCancel } from 'react-icons/md';
-import useAuthorized from '../../lib/hooks/useAuthorized';
 
 const Profile = () => {
   const authSelector = useSelector((state) => state.auth);

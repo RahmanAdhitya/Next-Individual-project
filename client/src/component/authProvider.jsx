@@ -7,15 +7,12 @@ import { auth_types } from '../redux/types';
 import { useEffect, useState } from 'react';
 import jsCookie from 'js-cookie';
 import { useRouter } from 'next/router';
-import Navbar from './Navbar';
 
 const AuthProvider = ({ children }) => {
   const dispatch = useDispatch();
   const router = useRouter();
-  const [hidden, setHidden] = useState(false);
 
   useEffect(() => {
-    console.log('render1');
     const token = jsCookie.get('auth_token');
     const savedUserData = jsCookie.get('user_data');
     if (savedUserData) {
@@ -28,19 +25,13 @@ const AuthProvider = ({ children }) => {
     }
 
     if (!token) {
-      // if (router.pathname !== '/auth/login' || router.pathname !== 'auth/signup' || router.pathname !== 'auth/resetPassword') {
-      //   router.push('/auth/login');
-      //   setHidden(true);
-      // }
+      if (router.pathname !== '/auth/login' || router.pathname !== 'auth/signup' || router.pathname !== 'auth/resetPassword') {
+        router.push('/auth/login');
+      }
     }
-  }, []);
+  }, [router.pathname]);
 
-  return (
-    <>
-      <Navbar hidden={hidden} />
-      {children}
-    </>
-  );
+  return <>{children}</>;
 };
 
 export default AuthProvider;

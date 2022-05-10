@@ -2,14 +2,12 @@
 
 import { Icon, FormControl, FormLabel, Stack, Input, Box, Container, Text, Button, InputGroup, InputRightElement, FormHelperText, useToast, Alert, AlertIcon } from '@chakra-ui/react';
 import { useFormik } from 'formik';
-import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import { IoMdEye, IoMdEyeOff } from 'react-icons/io';
 import { useSelector } from 'react-redux';
 import * as Yup from 'yup';
 import api from '../../lib/api';
-import { signUp } from '../../redux/action/auth';
 
 const signupPage = () => {
   const [passwordVisible, setPasswordVisible] = useState(false);

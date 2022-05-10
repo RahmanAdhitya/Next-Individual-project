@@ -25,6 +25,9 @@ const Navbar = ({ hidden }) => {
     router.push('/auth/login');
   };
 
+  if (!authSelector.id) {
+    return null;
+  }
   return (
     <Flex hidden={hidden} height="20" bgColor="teal.400" alignItems="center" justifyContent="space-between">
       <HStack>

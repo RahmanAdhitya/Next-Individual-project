@@ -9,12 +9,24 @@ const postControllers = {
       const filePath = 'post_images';
       const { filename } = req.file;
 
-      const newPost = await Post.create({
+      await Post.create({
         image_url: `${uploadFileDomain}/${filePath}/${filename}`,
         caption,
         location,
         UserId: req.token.id,
       });
+
+      const newPost = await Post.findOne({
+        where: {
+          image_url: `${uploadFileDomain}/${filePath}/${filename}`,
+        },
+        include: {
+          model: User,
+          attributes: ['id', 'username', 'image_url'],
+        },
+      });
+
+      console.log(newPost);
 
       return res.status(201).json({
         message: 'create new post success',
@@ -59,8 +71,6 @@ const postControllers = {
     try {
       const { id } = req.params;
       const { caption } = req.body;
-      console.log(caption);
-      console.log(id);
 
       const editPost = await Post.update(
         { caption },
@@ -105,14 +115,11 @@ const postControllers = {
         limit: _limit ? parseInt(_limit) : undefined,
         offset: (_page - 1) * _limit,
         include: [
-          {
-            model: Comment,
-            include: [{ model: User, attributes: ['id', 'username'], order: [['createdAt', 'DESC']] }],
-          },
           { model: User, attributes: ['username', 'full_name', 'image_url'] },
           {
             model: Like,
-            include: [{ model: User, attributes: ['id', 'username'], order: [['createdAt', 'DESC']] }],
+            include: [{ model: User, attributes: ['id', 'username'] }],
+            // where: { UserId: req.token.id },
           },
         ],
         distinct: true,
@@ -181,29 +188,91 @@ const postControllers = {
     try {
       const { PostId } = req.params;
 
+      const findPost = await Post.findOne({
+        where: {
+          id: PostId,
+        },
+      });
+
       const findLikeStatus = await Like.findOne({
         where: {
           PostId,
           UserId: req.token.id,
         },
-        defaults: {
-          ...req.body,
-        },
       });
 
       if (!findLikeStatus) {
-        const likingPost = await Post.findByPk(PostId);
         await Like.create({
           PostId,
           UserId: req.token.id,
         });
 
-        await likingPost.increment('like_count', { by: 1 });
+        const like = await Post.increment({ like_count: 1 }, { where: { id: PostId } });
+        console.log('like');
+        // console.log(like);
 
         return res.status(200).json({
           message: 'Liked post',
+          result: findPost,
         });
       }
+
+      // if (findLikeStatus) {
+      //   await Like.destroy({
+      //     where: {
+      //       PostId,
+      //       UserId: req.token.id,
+      //     },
+      //   });
+
+      //   const dislike = await Post.decrement({ like_count: 1 }, { where: { id: PostId } });
+      //   console.log('dislike');
+      //   // console.log(dislike);
+
+      //   return res.status(200).json({
+      //     message: 'disLiked post',
+      //     result: [false, findPost],
+      //   });
+      // }
+    } catch (err) {
+      console.log(err);
+      return res.status(500).json({
+        message: 'Server error',
+      });
+    }
+  },
+  dislikeApost: async (req, res) => {
+    try {
+      const { PostId } = req.params;
+
+      const findPost = await Post.findOne({
+        where: {
+          id: PostId,
+        },
+      });
+
+      const findLikeStatus = await Like.findOne({
+        where: {
+          PostId,
+          UserId: req.token.id,
+        },
+      });
+
+      // if (!findLikeStatus) {
+      //   await Like.create({
+      //     PostId,
+      //     UserId: req.token.id,
+      //   });
+
+      //   const like = await Post.increment({ like_count: 1 }, { where: { id: PostId } });
+      //   console.log('like');
+      //   // console.log(like);
+
+      //   return res.status(200).json({
+      //     message: 'Liked post',
+      //     result: [true, findPost],
+      //   });
+      // }
 
       if (findLikeStatus) {
         await Like.destroy({
@@ -211,17 +280,15 @@ const postControllers = {
             PostId,
             UserId: req.token.id,
           },
-          defaults: {
-            ...req.body,
-          },
         });
 
-        const likedPost = await Post.findByPk(PostId);
-
-        await likedPost.decrement('like_count', { by: 1 });
+        const dislike = await Post.decrement({ like_count: 1 }, { where: { id: PostId } });
+        console.log('dislike');
+        // console.log(dislike);
 
         return res.status(200).json({
           message: 'disLiked post',
+          result: findPost,
         });
       }
     } catch (err) {
@@ -231,7 +298,7 @@ const postControllers = {
       });
     }
   },
-  likeSatus: async (req, res) => {
+  likeStatus: async (req, res) => {
     const { PostId } = req.params;
 
     const findLikeStatus = await Like.findOne({
@@ -300,6 +367,37 @@ const postControllers = {
       return res.status(200).json({
         message: 'get all post succsess',
         result: findLikePost,
+      });
+    } catch (err) {
+      console.log(err);
+      return res.status(500).json({
+        message: 'Server error',
+      });
+    }
+  },
+  getAllComment: async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { _limit = 5, _page = 1 } = req.query;
+
+      delete req.query._limit;
+      delete req.query._page;
+
+      const allComment = await Comment.findAndCountAll({
+        where: {
+          ...req.query,
+          PostId: id,
+        },
+        limit: _limit ? parseInt(_limit) : undefined,
+        offset: (_page - 1) * _limit,
+        include: [{ model: User, attributes: ['username', 'full_name', 'image_url'] }],
+        distinct: true,
+        order: [['createdAt', 'DESC']],
+      });
+
+      return res.status(200).json({
+        message: 'get all comment succsess',
+        result: allComment,
       });
     } catch (err) {
       console.log(err);

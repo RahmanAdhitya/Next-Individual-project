@@ -3,13 +3,18 @@ import { AddIcon } from '@chakra-ui/icons';
 import { Box, Button, Drawer, DrawerBody, DrawerCloseButton, DrawerContent, DrawerFooter, DrawerHeader, DrawerOverlay, FormLabel, Input, Stack, Textarea, useDisclosure, InputGroup, Text } from '@chakra-ui/react';
 import { useFormik } from 'formik';
 import { useEffect, useRef, useState } from 'react';
+import { BiData } from 'react-icons/bi';
+import { useDispatch } from 'react-redux';
 import axiosInstance from '../lib/api';
+import { post_types } from '../redux/types';
 
 const PostContent = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const inputFileRef = useRef(null);
 
   const [selectedFile, setSelectedFile] = useState(null);
+
+  const dispatch = useDispatch();
 
   const refreshPage = () => {
     window.location.reload();
@@ -42,10 +47,16 @@ const PostContent = () => {
     formData.append('location', location);
     formData.append('post_image_file', selectedFile);
     console.log(formik.values);
-    await axiosInstance.post('/posts', formData);
+    const res = await axiosInstance.post('/posts', formData);
+    const data = res?.data?.result;
+    console.log(data);
 
     onClose();
-    refreshPage();
+    // refreshPage();
+    dispatch({
+      type: post_types.NEW_POST,
+      payload: [data],
+    });
   };
 
   return (

@@ -16,6 +16,34 @@ const resetPassword = () => {
         .required('This field is required')
         .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/, 'Must Contain 8 Characters, One Uppercase, One Lowercase, One Number and One Special Case Character'),
     }),
+    validateOnChange: false,
+    onSubmit: (values) => {
+      console.log(values);
+      setTimeout(async () => {
+        try {
+          const res = await api.patch(`/auth/reset-password/${token}`, formik.values);
+
+          console.log(formik.values);
+
+          toast({
+            title: 'Reset Password',
+            description: res.data.message,
+            status: 'success',
+            // duration: 9000,
+            isClosable: true,
+          });
+          router.push('/auth/login');
+        } catch (err) {
+          console.log(err);
+          toast({
+            title: 'error',
+            description: err.message,
+            status: 'error',
+          });
+        }
+      }, 3000);
+      formik.setSubmitting(false);
+    },
   });
 
   const router = useRouter();
@@ -28,24 +56,6 @@ const resetPassword = () => {
     formik.setFieldValue(name, value);
   };
 
-  const resetPasswordHandler = async () => {
-    try {
-      const res = await api.patch(`/auth/reset-password/${token}`, formik.values);
-
-      console.log(formik.values);
-
-      toast({
-        title: 'Reset Password',
-        description: res.data.message,
-        status: 'success',
-        // duration: 9000,
-        isClosable: true,
-      });
-      router.push('/auth/login');
-    } catch (err) {
-      console.log(err);
-    }
-  };
   return (
     <Flex justify="center" mt="10">
       <Box w="sm" shadow="2xl" p="8" borderRadius={10} bgColor="gray.100">
@@ -62,8 +72,10 @@ const resetPassword = () => {
 
           <Flex mt="2" justify="center">
             <Button
-              colorScheme="facebook"
-              onClick={() => resetPasswordHandler()}
+              onClick={formik.handleSubmit}
+              type="submit"
+              colorScheme="blue"
+              disabled={formik.isSubmitting}
               //
             >
               Reset password

@@ -21,6 +21,7 @@ import {
   PopoverArrow,
   PopoverCloseButton,
   PopoverBody,
+  useDisclosure,
 } from '@chakra-ui/react';
 import { FaHeart, FaCommentAlt } from 'react-icons/fa';
 import React, { useEffect, useState } from 'react';
@@ -31,18 +32,25 @@ import { FiSend } from 'react-icons/fi';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 import { MdDeleteForever, MdShare } from 'react-icons/md';
 import { BiEditAlt } from 'react-icons/bi';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import moment from 'moment';
+import useFetch from '../lib/hooks/usefetch';
+import MoreComment from './moreComment';
+import { post_types } from '../redux/types';
 
-const ContentCard = ({ profilPic, id, username, likes, caption, image, location, comment, userId, createDate }) => {
+const ContentCard = ({ profilPic, id, username, likes, caption, image, location, userId, createDate, index }) => {
   const [addComment, setAddComment] = useState(true);
   const [editCaption, setEditCaption] = useState(false);
   const [like, setLike] = useState(false);
-  const authSelector = useSelector((state) => state.auth);
+  const [page, setPage] = useState(1);
 
-  const refreshPage = () => {
-    window.location.reload();
-  };
+  const dispatch = useDispatch([]);
+
+  const authSelector = useSelector((state) => state.auth);
+  const postSelector = useSelector((state) => state.post);
+
+  const [data, count] = useFetch(`/posts/${id}/comment`, page, 5);
+
   const formik = useFormik({
     initialValues: {
       PostId: id,
@@ -50,6 +58,7 @@ const ContentCard = ({ profilPic, id, username, likes, caption, image, location,
       comment: '',
       caption: '',
     },
+    validateOnChange: false,
   });
 
   const inputHandler = (event) => {
@@ -60,16 +69,15 @@ const ContentCard = ({ profilPic, id, username, likes, caption, image, location,
   const postCommentHandler = async () => {
     const dataComment = {
       PostId: formik.values.PostId,
-      UserId: formik.values.UserId,
+      UserId: formik.values.UserId || authSelector.id,
       comment: formik.values.comment,
     };
     await api.post(`/posts/${id}-comment`, dataComment);
-
     refreshPage();
   };
 
   const renderComment = () => {
-    return comment?.map((comment) => {
+    return data?.map((comment) => {
       return (
         <Flex alignItems="center" justify="space-between">
           <Text fontSize="sm">
@@ -84,24 +92,62 @@ const ContentCard = ({ profilPic, id, username, likes, caption, image, location,
 
   const deletePostHandler = async () => {
     await api.delete(`/posts/${id}`);
+
+    dispatch({
+      type: post_types.DELETE_POST,
+      payload: index,
+    });
   };
 
   const likeStatus = async () => {
-    const res = await api.get(`posts/${id}/like`);
+    const res = await api.get(`posts/${id}/like-status`);
     setLike(res?.data?.result);
   };
 
   const likePost = async () => {
-    console.log(id);
-    await api.patch(`posts/${id}/like`);
-    setLike(!like);
-    refreshPage();
+    const res = await api.patch(`posts/${id}/like`);
+    console.log(`index ${index}`);
+
+    const numberOfLike = postSelector.postList[index].like_count + 1;
+    // numberOfLike += 1;
+
+    const updateData = [index, { like_count: numberOfLike }];
+
+    // console.log(`updateData ${updateData}`);
+    dispatch({
+      type: post_types.EDIT_POST,
+      payload: updateData,
+    });
+    setLike(true);
+  };
+  const dislikePost = async () => {
+    const res = await api.patch(`posts/${id}/dislike`);
+    console.log(`index ${index}`);
+
+    const numberOfLike = postSelector.postList[index].like_count - 1;
+    // numberOfLike -= 1;
+
+    const updateData = [index, { like_count: numberOfLike }];
+
+    console.log(`updateData ${updateData}`);
+    dispatch({
+      type: post_types.EDIT_POST,
+      payload: updateData,
+    });
+    setLike(false);
   };
 
   const editPost = async () => {
-    console.log(formik.values.caption);
     await api.patch(`posts/${id}/caption`, { caption: formik.values.caption });
-    // refreshPage();
+
+    const updateData = [index, { caption: formik.values.caption }];
+
+    dispatch({
+      type: post_types.EDIT_POST,
+      payload: updateData,
+    });
+
+    setEditCaption(false);
   };
 
   useEffect(() => {
@@ -164,15 +210,28 @@ const ContentCard = ({ profilPic, id, username, likes, caption, image, location,
         </NextLink>
         <Flex justify="space-between">
           <Box>
-            <Icon
-              boxSize={6}
-              as={FaHeart}
-              cursor="pointer"
-              onClick={() => likePost()}
-              color={!like ? 'gray.400' : 'red.400'}
-              id={id}
-              //
-            />
+            {like ? (
+              <Icon
+                boxSize={6}
+                as={FaHeart}
+                cursor="pointer"
+                onClick={() => dislikePost()}
+                color={'red.400'}
+                id={id}
+                //
+              />
+            ) : (
+              <Icon
+                boxSize={6}
+                as={FaHeart}
+                cursor="pointer"
+                onClick={() => likePost()}
+                color={'gray.400'}
+                id={id}
+                //
+              />
+            )}
+
             <Icon
               onClick={() => setAddComment(!addComment)}
               cursor="pointer"
@@ -226,6 +285,7 @@ const ContentCard = ({ profilPic, id, username, likes, caption, image, location,
           )}
           <Box>{renderComment()}</Box>
         </Box>
+        {/* <MoreComment id={id} /> */}
         <Box hidden={addComment ? true : false}>
           <InputGroup>
             <FormLabel htmlFor="comment"></FormLabel>
