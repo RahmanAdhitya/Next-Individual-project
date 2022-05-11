@@ -9,6 +9,7 @@ import React, { useEffect, useState } from 'react';
 import { IoMdEye, IoMdEyeOff } from 'react-icons/io';
 import { useDispatch, useSelector } from 'react-redux';
 import * as Yup from 'yup';
+import Page from '../../component/page';
 import { userLogin } from '../../redux/action/auth';
 
 const loginPage = () => {
@@ -47,77 +48,80 @@ const loginPage = () => {
     }
   }, [authSelector.id]);
   return (
-    <Container mt={8} alignItems="center" centerContent py="10">
-      <Stack>
-        <Box w="sm" shadow="2xl" p="8" borderRadius={10} borderColor="gray">
-          <form>
-            <FormControl isInvalid={formik.errors.username}>
-              <FormLabel htmlFor="inputUsername">Username</FormLabel>
-              <Input onChange={inputHandler} id="inputUsername" name="username" />
-              <FormHelperText>{formik.errors.username}</FormHelperText>
-            </FormControl>
+    <>
+      <Page title={`Login`}></Page>
+      <Container mt={8} alignItems="center" centerContent py="10">
+        <Stack>
+          <Box w="sm" shadow="2xl" p="8" borderRadius={10} borderColor="gray">
+            <form>
+              <FormControl isInvalid={formik.errors.username}>
+                <FormLabel htmlFor="inputUsername">Username</FormLabel>
+                <Input onChange={inputHandler} id="inputUsername" name="username" />
+                <FormHelperText>{formik.errors.username}</FormHelperText>
+              </FormControl>
 
-            <FormControl isInvalid={formik.errors.password}>
-              <FormLabel mt="4" htmlFor="inputPassword">
-                Password
-              </FormLabel>
-              <InputGroup>
-                <Input
-                  type={passwordVisible ? 'text' : 'password'}
-                  id="inputPassword"
-                  onChange={inputHandler}
-                  name="password"
+              <FormControl isInvalid={formik.errors.password}>
+                <FormLabel mt="4" htmlFor="inputPassword">
+                  Password
+                </FormLabel>
+                <InputGroup>
+                  <Input
+                    type={passwordVisible ? 'text' : 'password'}
+                    id="inputPassword"
+                    onChange={inputHandler}
+                    name="password"
+                    //
+                  />
+                  <InputRightElement children={<Icon fontSize="xl" onClick={() => setPasswordVisible(!passwordVisible)} as={passwordVisible ? IoMdEyeOff : IoMdEye} sx={{ _hover: { cursor: 'pointer' } }} />} />
+                </InputGroup>
+                <FormHelperText>{formik.errors.password}</FormHelperText>
+              </FormControl>
+
+              <Stack mt="10">
+                <Button
+                  onClick={formik.handleSubmit}
+                  type="submit"
+                  colorScheme="blue"
+                  disabled={formik.isSubmitting}
                   //
-                />
-                <InputRightElement children={<Icon fontSize="xl" onClick={() => setPasswordVisible(!passwordVisible)} as={passwordVisible ? IoMdEyeOff : IoMdEye} sx={{ _hover: { cursor: 'pointer' } }} />} />
-              </InputGroup>
-              <FormHelperText>{formik.errors.password}</FormHelperText>
-            </FormControl>
+                >
+                  Login
+                </Button>
+              </Stack>
+            </form>
 
-            <Stack mt="10">
-              <Button
-                onClick={formik.handleSubmit}
-                type="submit"
-                colorScheme="blue"
-                disabled={formik.isSubmitting}
-                //
-              >
-                Login
-              </Button>
+            <Stack mt={3} spacing={3}>
+              <Link href="./requestResetPassword">
+                <Button variant="link" colorScheme="blue" size="sm">
+                  Forgot password?
+                </Button>
+              </Link>
+              <HStack>
+                <Divider />
+                <Text fontSize="sm" whiteSpace="nowrap">
+                  or
+                </Text>
+                <Divider />
+              </HStack>
+              <HStack>
+                <Spacer />
+                <Text fontSize="md" color="muted">
+                  Don't have an account?
+                </Text>
+                <Text>
+                  <Link href={'./signup'}>
+                    <Button fontSize="md" variant="link" colorScheme="blue" size="sm">
+                      Sign up
+                    </Button>
+                  </Link>
+                </Text>
+                <Spacer />
+              </HStack>
             </Stack>
-          </form>
-
-          <Stack mt={3} spacing={3}>
-            <Link href="./requestResetPassword">
-              <Button variant="link" colorScheme="blue" size="sm">
-                Forgot password?
-              </Button>
-            </Link>
-            <HStack>
-              <Divider />
-              <Text fontSize="sm" whiteSpace="nowrap">
-                or
-              </Text>
-              <Divider />
-            </HStack>
-            <HStack>
-              <Spacer />
-              <Text fontSize="md" color="muted">
-                Don't have an account?
-              </Text>
-              <Text>
-                <Link href={'./signup'}>
-                  <Button fontSize="md" variant="link" colorScheme="blue" size="sm">
-                    Sign up
-                  </Button>
-                </Link>
-              </Text>
-              <Spacer />
-            </HStack>
-          </Stack>
-        </Box>
-      </Stack>
-    </Container>
+          </Box>
+        </Stack>
+      </Container>
+    </>
   );
 };
 

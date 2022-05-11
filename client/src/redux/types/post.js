@@ -5,4 +5,5 @@ export const post_types = {
   DELETE_POST: 'DELETE_POST',
   NEW_POST: 'NEW_POST',
   LIKE_POST: 'LIKE_POST',
+  COMMENT_POST: 'COMMENT_POST',
 };

@@ -21,35 +21,69 @@ import {
   PopoverArrow,
   PopoverCloseButton,
   PopoverBody,
-  useDisclosure,
+  Divider,
+  FormControl,
+  FormErrorMessage,
 } from '@chakra-ui/react';
 import { FaHeart, FaCommentAlt } from 'react-icons/fa';
 import React, { useEffect, useState } from 'react';
 import NextLink from 'next/link';
 import { useFormik } from 'formik';
-import api from '../lib/api';
 import { FiSend } from 'react-icons/fi';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 import { MdDeleteForever, MdShare } from 'react-icons/md';
 import { BiEditAlt } from 'react-icons/bi';
 import { useDispatch, useSelector } from 'react-redux';
 import moment from 'moment';
-import useFetch from '../lib/hooks/usefetch';
-import MoreComment from './moreComment';
 import { post_types } from '../redux/types';
+import api from '../lib/api';
+import { useRouter } from 'next/router';
 
-const ContentCard = ({ profilPic, id, username, likes, caption, image, location, userId, createDate, index }) => {
+const ContentCard = ({ profilPic, id, username, likes, caption, image, location, userId, createDate, index, comment }) => {
   const [addComment, setAddComment] = useState(true);
   const [editCaption, setEditCaption] = useState(false);
   const [like, setLike] = useState(false);
-  const [page, setPage] = useState(1);
+  const [more, setMore] = useState(1);
+  const [data, setData] = useState([]);
+  const [count, setCount] = useState([]);
+  const router = useRouter();
 
   const dispatch = useDispatch([]);
 
   const authSelector = useSelector((state) => state.auth);
   const postSelector = useSelector((state) => state.post);
 
-  const [data, count] = useFetch(`/posts/${id}/comment`, page, 5);
+  const limitPage = 5;
+
+  const moreComment = () => {
+    setMore(more + 1);
+  };
+
+  const fetchComment = async () => {
+    const res = await api.get(`/posts/${id}/comment`, {
+      params: {
+        _limit: limitPage,
+        _page: more,
+      },
+    });
+
+    setData(data.concat(res.data.result.rows));
+    setCount(count + res.data.result.count);
+  };
+
+  const renderComment = () => {
+    return data.map((val, index) => {
+      return (
+        <Flex alignItems="center" justify="space-between">
+          <Text fontSize="sm">
+            <span style={{ fontWeight: 'bold' }}>{val.User?.username}</span>
+            &nbsp;{val.comment}
+          </Text>
+          <Text fontSize="xx-small">{moment(val?.createdAt).startOf('day').fromNow()}</Text>
+        </Flex>
+      );
+    });
+  };
 
   const formik = useFormik({
     initialValues: {
@@ -58,7 +92,6 @@ const ContentCard = ({ profilPic, id, username, likes, caption, image, location,
       comment: '',
       caption: '',
     },
-    validateOnChange: false,
   });
 
   const inputHandler = (event) => {
@@ -72,22 +105,13 @@ const ContentCard = ({ profilPic, id, username, likes, caption, image, location,
       UserId: formik.values.UserId || authSelector.id,
       comment: formik.values.comment,
     };
-    await api.post(`/posts/${id}-comment`, dataComment);
-    refreshPage();
-  };
+    const res = await api.post(`/posts/${id}-comment`, dataComment);
+    const newData = res.data.result;
+    // console.log(newData);
 
-  const renderComment = () => {
-    return data?.map((comment) => {
-      return (
-        <Flex alignItems="center" justify="space-between">
-          <Text fontSize="sm">
-            <span style={{ fontWeight: 'bold' }}>{comment?.User?.username}</span>
-            &nbsp;{comment?.comment}
-          </Text>
-          <Text fontSize="xx-small">{moment(comment?.createdAt).startOf('day').fromNow()}</Text>
-        </Flex>
-      );
-    });
+    setData([res.data.result].concat(data));
+    setCount(count + 1);
+    setAddComment(true);
   };
 
   const deletePostHandler = async () => {
@@ -106,14 +130,12 @@ const ContentCard = ({ profilPic, id, username, likes, caption, image, location,
 
   const likePost = async () => {
     const res = await api.patch(`posts/${id}/like`);
-    console.log(`index ${index}`);
+    // console.log(`index ${index}`);
 
     const numberOfLike = postSelector.postList[index].like_count + 1;
-    // numberOfLike += 1;
 
     const updateData = [index, { like_count: numberOfLike }];
 
-    // console.log(`updateData ${updateData}`);
     dispatch({
       type: post_types.EDIT_POST,
       payload: updateData,
@@ -122,14 +144,13 @@ const ContentCard = ({ profilPic, id, username, likes, caption, image, location,
   };
   const dislikePost = async () => {
     const res = await api.patch(`posts/${id}/dislike`);
-    console.log(`index ${index}`);
+    // console.log(`index ${index}`);
 
     const numberOfLike = postSelector.postList[index].like_count - 1;
-    // numberOfLike -= 1;
 
     const updateData = [index, { like_count: numberOfLike }];
 
-    console.log(`updateData ${updateData}`);
+    // console.log(`updateData ${updateData}`);
     dispatch({
       type: post_types.EDIT_POST,
       payload: updateData,
@@ -151,8 +172,9 @@ const ContentCard = ({ profilPic, id, username, likes, caption, image, location,
   };
 
   useEffect(() => {
+    fetchComment();
     likeStatus();
-  }, []);
+  }, [more]);
 
   return (
     <Flex justify={'center'} mt={8}>
@@ -209,7 +231,7 @@ const ContentCard = ({ profilPic, id, username, likes, caption, image, location,
           <Image objectFit="cover" maxW="100%" src={image} />
         </NextLink>
         <Flex justify="space-between">
-          <Box>
+          <Box hidden={router.pathname === '/posts/[id]' ? true : false}>
             {like ? (
               <Icon
                 boxSize={6}
@@ -218,6 +240,7 @@ const ContentCard = ({ profilPic, id, username, likes, caption, image, location,
                 onClick={() => dislikePost()}
                 color={'red.400'}
                 id={id}
+
                 //
               />
             ) : (
@@ -248,8 +271,8 @@ const ContentCard = ({ profilPic, id, username, likes, caption, image, location,
           <Text fontWeight="medium" fontSize="small">
             {likes?.toLocaleString()} Likes
           </Text>
-          <Flex justify="space-between">
-            <Text fontSize="sm">
+          <Flex justify="space-between" mb="2">
+            <Text fontSize="m">
               <span style={{ fontWeight: 'bold' }}>{username}</span>&nbsp;{caption}
             </Text>
             <Icon
@@ -283,29 +306,43 @@ const ContentCard = ({ profilPic, id, username, likes, caption, image, location,
           ) : (
             <></>
           )}
-          <Box>{renderComment()}</Box>
+          <Divider colorScheme="whatsapp" />
+          <Text hidden={router.pathname === '/posts/[id]' ? true : false} as="i" fontSize="sm" color="gray.500">
+            comment
+          </Text>
+          <Box hidden={router.pathname === '/posts/[id]' ? true : false}>{renderComment()}</Box>
+          <Flex justify="center">
+            <Button size="sm" hidden={data.length === count ? true : false || router.pathname === '/posts/[id]' ? true : false} onClick={() => moreComment()}>
+              see more
+            </Button>
+          </Flex>
         </Box>
-        {/* <MoreComment id={id} /> */}
-        <Box hidden={addComment ? true : false}>
-          <InputGroup>
-            <FormLabel htmlFor="comment"></FormLabel>
-            <Input
-              id="comment"
-              placeholder="comment"
-              name="comment"
-              onChange={inputHandler}
-              //
-            />
 
-            <InputRightElement>
-              <Icon
-                as={FiSend}
-                cursor="pointer"
-                onClick={() => postCommentHandler()}
+        {/* input for comment */}
+        <Box hidden={addComment ? true : false}>
+          <FormControl>
+            <InputGroup>
+              <FormLabel htmlFor="comment"></FormLabel>
+              <Input
+                id="comment"
+                placeholder="comment"
+                name="comment"
+                onChange={inputHandler}
+                maxLength="300"
+
                 //
               />
-            </InputRightElement>
-          </InputGroup>
+
+              <InputRightElement>
+                <Icon
+                  as={FiSend}
+                  cursor="pointer"
+                  onClick={() => postCommentHandler()}
+                  //
+                />
+              </InputRightElement>
+            </InputGroup>
+          </FormControl>
         </Box>
       </Stack>
     </Flex>

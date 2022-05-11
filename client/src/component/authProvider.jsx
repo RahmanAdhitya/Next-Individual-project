@@ -2,7 +2,7 @@
 // for whole component in the project
 // import to /pages/_app.js
 
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { auth_types } from '../redux/types';
 import { useEffect, useState } from 'react';
 import jsCookie from 'js-cookie';
@@ -11,6 +11,7 @@ import { useRouter } from 'next/router';
 const AuthProvider = ({ children }) => {
   const dispatch = useDispatch();
   const router = useRouter();
+  const authselector = useSelector((state) => state.auth);
 
   useEffect(() => {
     const token = jsCookie.get('auth_token');
@@ -24,11 +25,11 @@ const AuthProvider = ({ children }) => {
       });
     }
 
-    if (!token) {
-      if (router.pathname !== '/auth/login' || router.pathname !== 'auth/signup' || router.pathname !== 'auth/resetPassword') {
-        router.push('/auth/login');
-      }
-    }
+    // if (!token) {
+    //   if (router.pathname !== '/auth/login' || router.pathname !== 'auth/signup' || router.pathname !== 'auth/resetPassword' || router.pathname !== 'posts/') {
+    //     router.push('/auth/login');
+    //   }
+    // }
   }, [router.pathname]);
 
   return <>{children}</>;

@@ -101,7 +101,7 @@ const postControllers = {
   },
   getAllpost: async (req, res) => {
     try {
-      const { _limit = 5, _page = 1, _sortBy = '', _sortDir = '' } = req.query;
+      const { _limit = 5, _page = [1, 1], _sortBy = '', _sortDir = '' } = req.query;
 
       delete req.query._limit;
       delete req.query._page;
@@ -113,7 +113,7 @@ const postControllers = {
           ...req.query,
         },
         limit: _limit ? parseInt(_limit) : undefined,
-        offset: (_page - 1) * _limit,
+        offset: (_page[0] - 1) * _limit,
         include: [
           { model: User, attributes: ['username', 'full_name', 'image_url'] },
           {
@@ -121,6 +121,14 @@ const postControllers = {
             include: [{ model: User, attributes: ['id', 'username'] }],
             // where: { UserId: req.token.id },
           },
+          {
+            model: Comment,
+            //
+            limit: _limit ? parseInt(_limit) : undefined,
+            offset: (_page[1] - 1) * _limit,
+            include: [{ model: User, atrributes: ['id', 'username'] }],
+          },
+          //
         ],
         distinct: true,
         order: [['createdAt', 'DESC']],
@@ -142,13 +150,7 @@ const postControllers = {
       const { id } = req.params;
 
       const allpost = await Post.findByPk(id, {
-        include: [
-          {
-            model: Comment,
-            include: [{ model: User, attributes: ['id', 'username'] }],
-          },
-          { model: User, attributes: ['username', 'full_name', 'image_url'] },
-        ],
+        include: [{ model: User, attributes: ['username', 'full_name', 'image_url'] }],
       });
 
       return res.status(200).json({
@@ -173,9 +175,16 @@ const postControllers = {
         PostId: id,
       });
 
-      res.status(201).json({
+      const findComment = await Comment.findOne({
+        where: {
+          id: newcomment.id,
+        },
+        include: [{ model: User, attributes: ['username', 'full_name', 'image_url'] }],
+      });
+
+      return res.status(201).json({
         message: 'create comment to a post succsess',
-        result: newcomment,
+        result: findComment,
       });
     } catch (err) {
       console.log(err);
@@ -209,31 +218,12 @@ const postControllers = {
 
         const like = await Post.increment({ like_count: 1 }, { where: { id: PostId } });
         console.log('like');
-        // console.log(like);
 
         return res.status(200).json({
           message: 'Liked post',
           result: findPost,
         });
       }
-
-      // if (findLikeStatus) {
-      //   await Like.destroy({
-      //     where: {
-      //       PostId,
-      //       UserId: req.token.id,
-      //     },
-      //   });
-
-      //   const dislike = await Post.decrement({ like_count: 1 }, { where: { id: PostId } });
-      //   console.log('dislike');
-      //   // console.log(dislike);
-
-      //   return res.status(200).json({
-      //     message: 'disLiked post',
-      //     result: [false, findPost],
-      //   });
-      // }
     } catch (err) {
       console.log(err);
       return res.status(500).json({
@@ -257,22 +247,6 @@ const postControllers = {
           UserId: req.token.id,
         },
       });
-
-      // if (!findLikeStatus) {
-      //   await Like.create({
-      //     PostId,
-      //     UserId: req.token.id,
-      //   });
-
-      //   const like = await Post.increment({ like_count: 1 }, { where: { id: PostId } });
-      //   console.log('like');
-      //   // console.log(like);
-
-      //   return res.status(200).json({
-      //     message: 'Liked post',
-      //     result: [true, findPost],
-      //   });
-      // }
 
       if (findLikeStatus) {
         await Like.destroy({
@@ -322,20 +296,21 @@ const postControllers = {
     }
   },
   getAllpostByUserId: async (req, res) => {
+    const { _limit = 5, _page = 1, _sortBy = '', _sortDir = '' } = req.query;
+
+    delete req.query._limit;
+    delete req.query._page;
+    delete req.query._sortBy;
+    delete req.query._sortDir;
+
     const { id } = req.params;
     try {
       const allpost = await Post.findAndCountAll({
         where: {
+          ...req.query,
           UserId: id,
         },
-        include: [
-          {
-            model: Comment,
-            include: [{ model: User, attributes: ['id', 'username'] }],
-            // order: [['createdAt', 'DESC']],
-          },
-          { model: User, attributes: ['username', 'full_name', 'image_url', 'id', 'bio'] },
-        ],
+        include: [{ model: User, attributes: ['username', 'full_name', 'image_url', 'id', 'bio'] }],
         order: [['createdAt', 'DESC']],
       });
 

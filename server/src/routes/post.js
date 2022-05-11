@@ -15,7 +15,7 @@ router.post(
 );
 
 router.get('/', loginAuthorizedToken, postControllers.getAllpost);
-router.get('/:id', loginAuthorizedToken, postControllers.getPostById);
+router.get('/:id', postControllers.getPostById);
 router.get('/:id/comment', loginAuthorizedToken, postControllers.getAllComment);
 router.get('/user/:id', loginAuthorizedToken, postControllers.getAllpostByUserId);
 router.get('/:PostId/like-status', loginAuthorizedToken, postControllers.likeStatus);

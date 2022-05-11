@@ -2,11 +2,23 @@ import { Box, Icon, Text, Input, InputRightElement, InputGroup, FormLabel, Butto
 import moment from 'moment';
 import useFetch from '../lib/hooks/usefetch';
 import { useFormik } from 'formik';
+import { useState } from 'react';
 
 const MoreComment = ({ id }) => {
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  // const { isOpen, onOpen, onClose } = useDisclosure();
+  const [page, setPage] = useState(1);
 
   const [data, count] = useFetch(`/posts/${id}/comment`, 1, 0);
+
+  const formik = useFormik({
+    initialValues: {
+      PostId: id,
+      UserId: '',
+      comment: '',
+      caption: '',
+    },
+    validateOnChange: false,
+  });
 
   const inputHandler = (event) => {
     const { value, name } = event.target;
@@ -37,7 +49,9 @@ const MoreComment = ({ id }) => {
     });
   };
 
-  const closeMoreHandler = () => {};
+  const fetchMore = () => {
+    setPage(page + 1);
+  };
   return (
     <>
       <Button onClick={onOpen}>see more</Button>

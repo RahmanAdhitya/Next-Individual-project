@@ -1,44 +1,90 @@
-import { Avatar, Box, Flex, Spacer, Stack, Text } from '@chakra-ui/react';
+import { Avatar, Box, Flex, Spacer, Spinner, Stack, Text } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import ContentCard from '../../component/ContentCard';
 import useFetch from '../../lib/hooks/usefetch';
 import useFetchUser from '../../lib/hooks/useFetchUser';
 import moment from 'moment';
 import NextLink from 'next/link';
+import { useDispatch, useSelector } from 'react-redux';
+import { useEffect, useState } from 'react';
+import api from '../../lib/api';
+import { post_types } from '../../redux/types';
+import Page from '../../component/page';
+import InfiniteScroll from 'react-infinite-scroll-component';
 
 const UserDetails = () => {
   const router = useRouter();
+  const dispatch = useDispatch([]);
+  const postSelector = useSelector((state) => state.post);
+  const authSelector = useSelector((state) => state.auth);
+  const [page, setPage] = useState(1);
 
   const { id } = router.query;
   const [profile] = useFetchUser(`/auth/user/${id}`);
   const [activitiesData] = useFetchUser(`/posts/like/${id}`);
-  // console.log(id);
-  // console.log(activitiesData);
-  const [data] = useFetch(`/posts/user/${id}`);
-  // console.log(data);
+  const [count, setCount] = useState();
+
+  const limitPage = 5;
+
+  const fetchNextPage = () => {
+    setPage(page + 1);
+  };
+
+  const fetchPost = async () => {
+    const res = await api.get(`/posts/user/${id}`, {
+      params: {
+        _limit: limitPage,
+        _page: page,
+      },
+    });
+
+    if (page === 1) {
+      dispatch({
+        type: post_types.FETCH_POST,
+        payload: res?.data?.result?.rows,
+      });
+    } else {
+      dispatch({
+        type: post_types.UPDATE_POST,
+        payload: res?.data?.result?.rows,
+      });
+    }
+
+    // }
+
+    setCount(res?.data?.result?.count);
+  };
+
+  const data = postSelector.postList;
 
   const renderPost = () => {
-    console.log(router.isReady);
-    return data.map((post) => {
+    return data.map((post, index) => {
       return (
-        <Box mt={4}>
-          <ContentCard
-            caption={post.caption}
-            profilPic={post.User.image_url}
-            userId={post.UserId}
-            username={post.User.username}
-            location={post.location}
-            likes={post.like_count}
-            image={post.image_url}
-            id={post.id}
-            comment={post.Comments}
-            createDate={post.createdAt}
-            //
-          />
-        </Box>
+        <ContentCard
+          caption={post.caption}
+          profilPic={post.User.image_url}
+          userId={post.UserId}
+          username={post.User.username}
+          location={post.location}
+          likes={post.like_count}
+          image={post.image_url}
+          id={post.id}
+          comment={post.Comments}
+          createDate={post.createdAt}
+          index={index}
+          //
+        />
       );
     });
   };
+
+  useEffect(() => {
+    if (router.isReady) {
+      fetchPost();
+    } else if (authSelector.is_verifed) {
+      router.push('user/profile');
+    }
+  }, [router.isReady, page]);
 
   const renderProfile = () => {
     return (
@@ -65,15 +111,36 @@ const UserDetails = () => {
   };
 
   return (
-    <Box>
-      <Flex justify="space-between">
-        <Box>{renderProfile()}</Box>
-        <Box>{renderPost()}</Box>
-        <Box mt={8} me={5}>
-          {renderActivities()}
-        </Box>
-      </Flex>
-    </Box>
+    <>
+      <Page title={`${authSelector.full_name} || ${authSelector.username}`}></Page>
+      <Box>
+        <Flex justify="space-around">
+          <Box>
+            <Box>{renderProfile()}</Box>
+            <Box mt={8}>{renderActivities()}</Box>
+          </Box>
+
+          <InfiniteScroll
+            dataLength={data.length}
+            next={() => fetchNextPage()}
+            hasMore={(page * limitPage) % count === page * limitPage ? true : false}
+            // hasmore={true}
+            loader={
+              <Flex mt="5" alignItems="center" justifyContent="center">
+                <Spinner />
+                <h4>Loading...</h4>
+              </Flex>
+            }
+            endMessage={<Text textAlign="center">you have seen all!</Text>}
+            scrollThreshold={1}
+            onScroll
+            //
+          >
+            {renderPost()}
+          </InfiniteScroll>
+        </Flex>
+      </Box>
+    </>
   );
 };
 

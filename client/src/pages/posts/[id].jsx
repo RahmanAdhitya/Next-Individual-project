@@ -1,20 +1,49 @@
-import { Icon, Box, Button, IconButton, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Stack, useDisclosure } from '@chakra-ui/react';
+import {
+  Icon,
+  Box,
+  Button,
+  IconButton,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
+  Stack,
+  useDisclosure,
+  PopoverBody,
+  PopoverCloseButton,
+  PopoverArrow,
+  PopoverHeader,
+  Image,
+  Flex,
+  Avatar,
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+  Text,
+  Divider,
+} from '@chakra-ui/react';
 import { useRouter } from 'next/router';
-import { BiPlus, BiMinus, BiHeart, BiCopy } from 'react-icons/bi';
+import { BiCopy } from 'react-icons/bi';
 import { FacebookIcon, FacebookShareButton, LinkedinIcon, LinkedinShareButton, TwitterIcon, TwitterShareButton, WhatsappIcon, WhatsappShareButton } from 'react-share';
 import ContentCard from '../../component/ContentCard';
-import axios from 'axios';
 import Page from '../../component/page';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { WEB_URL } from '../../configs/url';
+import api from '../../lib/api';
+import { MdShare } from 'react-icons/md';
+import NextLink from 'next/link';
+import { BsThreeDotsVertical } from 'react-icons/bs';
+import moment from 'moment';
 
 const postDetail = ({ post }) => {
   const router = useRouter();
+  const [count, setCount] = useState();
 
   const copyLinkBtnHandler = () => {
-    // navigator.clipboard.writeText(
-    //   `https://grumpy-dolphin-14.loca.lt${router.asPath}`
-    // );
+    navigator.clipboard.writeText(` https://ninety-dragons-refuse-149-110-147-85.loca.lt${router.asPath}`);
     // toast({
     //   position: "top-right",
     //   status: "info",
@@ -45,9 +74,6 @@ const postDetail = ({ post }) => {
             </Stack>
           </ModalBody>
           <ModalFooter>
-            {/* <Button colorScheme="blue" mr={3}>
-              Save
-            </Button> */}
             <Button onClick={onClose}>Cancel</Button>
           </ModalFooter>
         </ModalContent>
@@ -56,10 +82,11 @@ const postDetail = ({ post }) => {
   };
 
   useEffect(() => {
-    if (router.isReady) {
-      onOpen();
-    }
-  }, [router.isReady]);
+    // if (router.isReady) {
+    onOpen();
+    console.log(post);
+    // }
+  }, []);
   return (
     <Page
       title={`${post.User.username} || ${post.caption}`}
@@ -70,18 +97,67 @@ const postDetail = ({ post }) => {
     >
       <Box>
         {shareToggle()}
-        <ContentCard
-          caption={post.caption}
-          profilPic={post.User.image_url}
-          username={post.User.username}
-          location={post.location}
-          likes={post.like_count}
-          image={post.image_url}
-          id={post.id}
-          comment={post.Comments}
-          userId={post.UserId}
-          //
-        />
+        <Flex justify={'center'} mt={8}>
+          <Stack w="sm" boxSizeing="sm" borderRadius="lg" padding={3} shadow="dark-lg">
+            <Flex justifyContent="space-between" alignItems="center">
+              <NextLink href={`/user/${post.UserId}`}>
+                <Flex cursor="pointer">
+                  <Avatar border="2px solid teal" name={post.User.username} src={post.User.image_url} />
+                  <Box ms={3}>
+                    <Text fontWeight="medium">{post.User.username}</Text>
+                    <Text fontSize="sm" fontWeight="sm">
+                      {post.location}
+                    </Text>
+                  </Box>
+                </Flex>
+              </NextLink>
+
+              <Box>
+                <Popover placement="bottom-end" size="xs">
+                  <PopoverTrigger>
+                    <Button bgColor="transparent">
+                      <Icon boxSize={6} as={BsThreeDotsVertical} />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent>
+                    <PopoverHeader fontWeight="semibold">Option</PopoverHeader>
+                    <PopoverArrow />
+                    <PopoverCloseButton />
+                    <PopoverBody>
+                      <NextLink href={`/posts/${post.PostId}`}>
+                        <Button w="100%" bgColor="transparent" justifyContent="space-between">
+                          <Text>Share</Text>
+                          <Icon as={MdShare} />
+                        </Button>
+                      </NextLink>
+                    </PopoverBody>
+                  </PopoverContent>
+                </Popover>
+              </Box>
+            </Flex>
+
+            <NextLink href={`/posts/${post.PostId}`}>
+              <Image objectFit="cover" maxW="100%" src={post.image_url} />
+            </NextLink>
+            <Flex justify="space-between">
+              <Text fontSize="xs">{moment(post.createDate).format('Do MMMM YYYY')}</Text>
+            </Flex>
+            <Box>
+              <Text fontWeight="medium" fontSize="small">
+                {post.like_count?.toLocaleString()} Likes
+              </Text>
+              <Flex justify="space-between" mb="2">
+                <Text fontSize="m">
+                  <span style={{ fontWeight: 'bold' }}>{post.User.username}</span>&nbsp;{post.caption}
+                </Text>
+              </Flex>
+
+              <Divider colorScheme="whatsapp" />
+            </Box>
+
+            {/* input for comment */}
+          </Stack>
+        </Flex>
       </Box>
     </Page>
   );
@@ -89,19 +165,21 @@ const postDetail = ({ post }) => {
 
 export async function getServerSideProps(context) {
   const { id } = context.params;
-  const { auth_token } = context.req.cookies;
 
   try {
     // this function call axios not axiosinstace because there no token in server
-    const res = await axios.get(`http://localhost:2060/posts/${id}`, {
-      headers: {
-        Authorization: auth_token,
-      },
+    const res = await api.get(`/posts/${id}`, {
+      // headers: {
+      //   // Authorization: auth_token || '',
+      // },
     });
     const post = res.data.result;
 
+    // console.log(post);
+
     return { props: { post } };
   } catch (err) {
+    console.log(err);
     return {
       props: {},
     };

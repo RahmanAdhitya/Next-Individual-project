@@ -11,7 +11,6 @@ const useFetchUser = (routes = '') => {
       try {
         const res = await api.get(routes);
         setData(res.data.result);
-        console.log(res.data.result);
       } catch (err) {
         console.log(err);
       }

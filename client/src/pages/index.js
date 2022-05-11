@@ -1,17 +1,20 @@
 import { Box, Flex, Spinner, Text } from '@chakra-ui/react';
 import Head from 'next/head';
 import ContentCard from '../component/ContentCard';
-import useFetch from '../lib/hooks/usefetch';
 import { useEffect, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { useDispatch, useSelector } from 'react-redux';
-import { post_types } from '../redux/types';
+import { comment_types, post_types } from '../redux/types';
 import api from '../lib/api';
+import Page from '../component/page';
 
 export default function Home() {
   const [page, setPage] = useState(1);
-  // const [hasMoreItems, setHasMoreItems] = useState(true);
+  const [more, setmore] = useState(1);
   const [count, setCount] = useState();
+
+  const authSelector = useSelector((state) => state.auth);
+
   const dispatch = useDispatch([]);
   const postSelector = useSelector((state) => state.post);
 
@@ -21,13 +24,11 @@ export default function Home() {
     setPage(page + 1);
   };
 
-  // const [data, count] = useFetch('/posts', page);
-
   const fetchPost = async () => {
     const res = await api.get('/posts', {
       params: {
         _limit: limitPage,
-        _page: page,
+        _page: [page, more],
       },
     });
 
@@ -48,9 +49,10 @@ export default function Home() {
     setCount(res?.data?.result?.count);
   };
 
-  console.log(postSelector);
+  // console.log(postSelector);
 
   const data = postSelector.postList;
+  const datalength = data.length;
 
   useEffect(() => {
     fetchPost();
@@ -69,6 +71,7 @@ export default function Home() {
             likes={post?.like_count}
             image={post?.image_url}
             id={post?.id}
+            comment={post?.Comments}
             createDate={post?.createdAt}
             index={index}
           />
@@ -79,11 +82,18 @@ export default function Home() {
 
   return (
     <>
+      <Page
+        title={`Home || ${authSelector.username}`}
+        // description={post.caption}
+        // image={post.image_url}
+        // url={`${WEB_URL}${router.asPath}`}
+        //
+      ></Page>
       <InfiniteScroll
-        dataLength={data.length}
+        dataLength={datalength}
         next={() => fetchNextPage()}
-        hasMore={(page * limitPage) % count === page * limitPage ? true : false}
-        // hasmore={true}
+        // hasMore={(page * limitPage) % count === page * limitPage ? true : false}
+        hasMore={datalength === count ? false : true}
         loader={
           <Flex mt="5" alignItems="center" justifyContent="center">
             <Spinner />

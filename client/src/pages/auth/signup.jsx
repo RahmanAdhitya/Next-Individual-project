@@ -7,6 +7,7 @@ import React, { useEffect, useState } from 'react';
 import { IoMdEye, IoMdEyeOff } from 'react-icons/io';
 import { useSelector } from 'react-redux';
 import * as Yup from 'yup';
+import Page from '../../component/page';
 import api from '../../lib/api';
 
 const signupPage = () => {
@@ -78,84 +79,93 @@ const signupPage = () => {
     }
   }, [authSelector.id]);
   return (
-    <Container mt={8} alignItems="center" centerContent py="10">
-      <Stack>
-        <Box w="sm" shadow="2xl" p="8" borderRadius={10} borderColor="gray">
-          <form>
-            <FormControl isInvalid={formik.errors.username}>
-              <FormLabel htmlFor="inputUsername">Username</FormLabel>
-              <Input onChange={inputHandler} id="inputUsername" name="username" />
-              <FormHelperText>{formik.errors.username}</FormHelperText>
-            </FormControl>
+    <>
+      <Page
+        title={`signup`}
+        // description={post.caption}
+        // image={post.image_url}
+        // url={`${WEB_URL}${router.asPath}`}
+        //
+      ></Page>
+      <Container mt={8} alignItems="center" centerContent py="10">
+        <Stack>
+          <Box w="sm" shadow="2xl" p="8" borderRadius={10} borderColor="gray">
+            <form>
+              <FormControl isInvalid={formik.errors.username}>
+                <FormLabel htmlFor="inputUsername">Username</FormLabel>
+                <Input onChange={inputHandler} id="inputUsername" name="username" />
+                <FormHelperText>{formik.errors.username}</FormHelperText>
+              </FormControl>
 
-            <FormControl isInvalid={formik.errors.email}>
-              <FormLabel htmlFor="inputemail">email</FormLabel>
-              <Input onChange={inputHandler} id="inputemail" name="email" />
-              <FormHelperText>{formik.errors.email}</FormHelperText>
-            </FormControl>
+              <FormControl isInvalid={formik.errors.email}>
+                <FormLabel htmlFor="inputemail">email</FormLabel>
+                <Input onChange={inputHandler} id="inputemail" name="email" />
+                <FormHelperText>{formik.errors.email}</FormHelperText>
+              </FormControl>
 
-            <FormControl isInvalid={formik.errors.full_name}>
-              <FormLabel htmlFor="inputfull_name">Full Name</FormLabel>
-              <Input onChange={inputHandler} id="inputfull_name" name="full_name" />
-              <FormHelperText>{formik.errors.full_name}</FormHelperText>
-            </FormControl>
+              <FormControl isInvalid={formik.errors.full_name}>
+                <FormLabel htmlFor="inputfull_name">Full Name</FormLabel>
+                <Input onChange={inputHandler} id="inputfull_name" name="full_name" />
+                <FormHelperText>{formik.errors.full_name}</FormHelperText>
+              </FormControl>
 
-            <FormControl isInvalid={formik.errors.password}>
-              <FormLabel mt="4" htmlFor="inputPassword">
-                Password
-              </FormLabel>
-              <InputGroup>
-                <Input
-                  type={passwordVisible ? 'text' : 'password'}
-                  id="inputPassword"
-                  onChange={inputHandler}
-                  name="password"
+              <FormControl isInvalid={formik.errors.password}>
+                <FormLabel mt="4" htmlFor="inputPassword">
+                  Password
+                </FormLabel>
+                <InputGroup>
+                  <Input
+                    type={passwordVisible ? 'text' : 'password'}
+                    id="inputPassword"
+                    onChange={inputHandler}
+                    name="password"
+                    //
+                  />
+                  <InputRightElement
+                    children={<Icon fontSize="xl" onClick={() => setPasswordVisible(!passwordVisible)} as={passwordVisible ? IoMdEyeOff : IoMdEye} sx={{ _hover: { cursor: 'pointer' } }} />}
+                    //
+                  />
+                </InputGroup>
+                <FormHelperText>{formik.errors.password}</FormHelperText>
+              </FormControl>
+
+              <FormControl isInvalid={formik.errors.repeatPassword}>
+                <FormLabel mt="4" htmlFor="inputrepeatPassword">
+                  Repeat Password
+                </FormLabel>
+                <InputGroup>
+                  <Input
+                    type={passwordVisible ? 'text' : 'password'}
+                    id="inputrepeatPassword"
+                    onChange={inputHandler}
+                    repeatP
+                    name="repeatPassword"
+                    //
+                  />
+                  <InputRightElement
+                    children={<Icon fontSize="xl" onClick={() => setrepeatPasswordVisible(!repeatPasswordVisible)} as={repeatPasswordVisible ? IoMdEyeOff : IoMdEye} sx={{ _hover: { cursor: 'pointer' } }} />}
+                    //
+                  />
+                </InputGroup>
+                <FormHelperText>{formik.errors.repeatPassword}</FormHelperText>
+              </FormControl>
+
+              <Stack mt="10">
+                <Button
+                  onClick={formik.handleSubmit}
+                  type="submit"
+                  colorScheme="blue"
+                  disabled={formik.isSubmitting}
                   //
-                />
-                <InputRightElement
-                  children={<Icon fontSize="xl" onClick={() => setPasswordVisible(!passwordVisible)} as={passwordVisible ? IoMdEyeOff : IoMdEye} sx={{ _hover: { cursor: 'pointer' } }} />}
-                  //
-                />
-              </InputGroup>
-              <FormHelperText>{formik.errors.password}</FormHelperText>
-            </FormControl>
-
-            <FormControl isInvalid={formik.errors.repeatPassword}>
-              <FormLabel mt="4" htmlFor="inputrepeatPassword">
-                Repeat Password
-              </FormLabel>
-              <InputGroup>
-                <Input
-                  type={passwordVisible ? 'text' : 'password'}
-                  id="inputrepeatPassword"
-                  onChange={inputHandler}
-                  repeatP
-                  name="repeatPassword"
-                  //
-                />
-                <InputRightElement
-                  children={<Icon fontSize="xl" onClick={() => setrepeatPasswordVisible(!repeatPasswordVisible)} as={repeatPasswordVisible ? IoMdEyeOff : IoMdEye} sx={{ _hover: { cursor: 'pointer' } }} />}
-                  //
-                />
-              </InputGroup>
-              <FormHelperText>{formik.errors.repeatPassword}</FormHelperText>
-            </FormControl>
-
-            <Stack mt="10">
-              <Button
-                onClick={formik.handleSubmit}
-                type="submit"
-                colorScheme="blue"
-                disabled={formik.isSubmitting}
-                //
-              >
-                Sign Up
-              </Button>
-            </Stack>
-          </form>
-        </Box>
-      </Stack>
-    </Container>
+                >
+                  Sign Up
+                </Button>
+              </Stack>
+            </form>
+          </Box>
+        </Stack>
+      </Container>
+    </>
   );
 };
 
