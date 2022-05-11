@@ -60,7 +60,8 @@ export default function Home() {
   useEffect(() => {
     if (!authSelector.id) {
       router.push('/');
-    } else if (!authSelector.is_verify) {
+    } else if (authSelector.is_verified === false) {
+      router.push('/user/profile');
       setTimeout(
         toast({
           title: 'Verify Account',
@@ -71,7 +72,6 @@ export default function Home() {
         }),
         3000
       );
-      router.push('/user/profile');
     }
     fetchPost();
   }, [page]);

@@ -46,19 +46,19 @@ const PostContent = () => {
     const res = await axiosInstance.post('/posts', formData);
     const data = res?.data?.result;
     // console.log(data);
-    formik.setSubmitting;
 
-    onClose();
-    // refreshPage();
     dispatch({
       type: post_types.NEW_POST,
       payload: [data],
     });
+    window.location.reload();
+    // formik.setSubmitting(false);
+    onClose();
   };
 
   return (
     <>
-      <Button disabled={!authSelector.is_verify} fontSize={20} size="md" leftIcon={<AddIcon />} colorScheme="teal" onClick={onOpen}>
+      <Button disabled={!authSelector.is_verified} fontSize={20} size="md" leftIcon={<AddIcon />} colorScheme="teal" onClick={onOpen}>
         Post
       </Button>
 

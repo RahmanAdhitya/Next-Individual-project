@@ -43,7 +43,7 @@ const postDetail = ({ post }) => {
   const [count, setCount] = useState();
 
   const copyLinkBtnHandler = () => {
-    navigator.clipboard.writeText(` https://ninety-dragons-refuse-149-110-147-85.loca.lt${router.asPath}`);
+    navigator.clipboard.writeText(` https://some-vans-see-149-110-147-85.loca.lt${router.asPath}`);
     // toast({
     //   position: "top-right",
     //   status: "info",

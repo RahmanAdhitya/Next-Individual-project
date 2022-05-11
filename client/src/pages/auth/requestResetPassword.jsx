@@ -1,11 +1,18 @@
 import { Box, Button, Flex, FormControl, FormHelperText, FormLabel, Input, Text, useToast } from '@chakra-ui/react';
 import { useFormik } from 'formik';
-import React from 'react';
+import React, { useEffect } from 'react';
 import api from '../../lib/api';
 import * as Yup from 'yup';
+import { useRouter } from 'next/router';
+import Link from 'next/link';
+import { useSelector } from 'react-redux';
 
 const requestResetPassword = () => {
   const toast = useToast();
+  const router = useRouter();
+
+  const authSelector = useSelector((state) => state.auth);
+
   const formik = useFormik({
     initialValues: {
       email: '',
@@ -47,6 +54,12 @@ const requestResetPassword = () => {
     formik.setFieldValue(name, value);
   };
 
+  useEffect(() => {
+    if (authSelector.id) {
+      router.push('/home');
+    }
+  }, []);
+
   return (
     <Flex justify="center" mt="10">
       <Box w="sm" shadow="2xl" p="8" borderRadius={10} bgColor="gray.100">
@@ -61,7 +74,7 @@ const requestResetPassword = () => {
             <FormHelperText>{formik.errors.email}</FormHelperText>
           </FormControl>
 
-          <Flex mt="2" justify="center">
+          <Flex mt="3" justify="center">
             <Button
               onClick={formik.handleSubmit}
               type="submit"
@@ -73,6 +86,16 @@ const requestResetPassword = () => {
             </Button>
           </Flex>
         </form>
+        <Flex mt={4} justify="center">
+          <Text me={2}>Back to </Text>
+          <Link href={'/auth/login'}>
+            <Text>
+              <Button fontSize="md" variant="link" colorScheme="blue" size="sm">
+                Login
+              </Button>
+            </Text>
+          </Link>
+        </Flex>
       </Box>
     </Flex>
   );

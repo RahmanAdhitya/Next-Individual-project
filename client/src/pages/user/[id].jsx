@@ -78,6 +78,8 @@ const UserDetails = () => {
     });
   };
 
+  const datalength = data.length;
+
   useEffect(() => {
     if (router.isReady) {
       fetchPost();
@@ -121,10 +123,10 @@ const UserDetails = () => {
           </Box>
 
           <InfiniteScroll
-            dataLength={data.length}
+            dataLength={datalength}
             next={() => fetchNextPage()}
-            hasMore={(page * limitPage) % count === page * limitPage ? true : false}
-            // hasmore={true}
+            // hasMore={(page * limitPage) % count === page * limitPage ? true : false}
+            hasMore={datalength === count ? false : true}
             loader={
               <Flex mt="5" alignItems="center" justifyContent="center">
                 <Spinner />

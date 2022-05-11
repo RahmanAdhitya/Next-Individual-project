@@ -69,9 +69,6 @@ const ContentCard = ({ profilPic, id, username, likes, caption, image, location,
 
     setData(data.concat(res.data.result.rows));
     setCount(res.data.result.count);
-
-    console.log(data.length);
-    console.log(count);
   };
 
   const renderComment = () => {
@@ -123,6 +120,8 @@ const ContentCard = ({ profilPic, id, username, likes, caption, image, location,
       type: post_types.DELETE_POST,
       payload: index,
     });
+
+    window.location.reload();
   };
 
   const likeStatus = async () => {

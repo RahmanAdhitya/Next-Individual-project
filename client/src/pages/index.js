@@ -10,7 +10,7 @@ const index = () => {
     if (authSelector.id) {
       router.push('/home');
     } else router.push('/auth/login');
-  }, [authSelector.id]);
+  }, []);
   return (
     <>
       <Center>

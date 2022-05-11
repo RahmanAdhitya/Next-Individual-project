@@ -24,13 +24,7 @@ const AuthProvider = ({ children }) => {
         payload: parsedUserData,
       });
     }
-
-    // if (!token) {
-    //   if (router.pathname !== '/auth/login' || router.pathname !== 'auth/signup' || router.pathname !== 'auth/resetPassword' || router.pathname !== 'posts/') {
-    //     router.push('/auth/login');
-    //   }
-    // }
-  }, [router.pathname]);
+  }, []);
 
   return <>{children}</>;
 };

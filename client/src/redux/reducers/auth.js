@@ -7,7 +7,7 @@ const init_state = {
   full_name: '',
   bio: '',
   image_url: '',
-  is_verify: false,
+  is_verified: '',
   errorMsg: '',
 };
 
@@ -22,7 +22,7 @@ export const auth_reducer = (state = init_state, action) => {
       id: action.payload.id,
       bio: action.payload.bio,
       image_url: action.payload.image_url,
-      is_verify: action.payload.is_verified,
+      is_verified: action.payload.is_verified,
       errorMsg: '',
     };
   } else if (action.type === auth_types.LOGOUT_USER) {
@@ -35,7 +35,7 @@ export const auth_reducer = (state = init_state, action) => {
       id: action.payload.id,
       bio: action.payload.bio,
       image_url: action.payload.image_url,
-      is_verify: action.payload.is_verified,
+      is_verified: action.payload.is_verified,
     };
   }
 
