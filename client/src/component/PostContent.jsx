@@ -3,22 +3,18 @@ import { AddIcon } from '@chakra-ui/icons';
 import { Box, Button, Drawer, DrawerBody, DrawerCloseButton, DrawerContent, DrawerFooter, DrawerHeader, DrawerOverlay, FormLabel, Input, Stack, Textarea, useDisclosure, InputGroup, Text } from '@chakra-ui/react';
 import { useFormik } from 'formik';
 import { useEffect, useRef, useState } from 'react';
-import { BiData } from 'react-icons/bi';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import axiosInstance from '../lib/api';
 import { post_types } from '../redux/types';
 
 const PostContent = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const inputFileRef = useRef(null);
+  const authSelector = useSelector((state) => state.auth);
 
   const [selectedFile, setSelectedFile] = useState(null);
 
   const dispatch = useDispatch();
-
-  const refreshPage = () => {
-    window.location.reload();
-  };
 
   const formik = useFormik({
     initialValues: {
@@ -46,10 +42,11 @@ const PostContent = () => {
     formData.append('caption', caption);
     formData.append('location', location);
     formData.append('post_image_file', selectedFile);
-    console.log(formik.values);
+    // console.log(formik.values);
     const res = await axiosInstance.post('/posts', formData);
     const data = res?.data?.result;
-    console.log(data);
+    // console.log(data);
+    formik.setSubmitting;
 
     onClose();
     // refreshPage();
@@ -61,7 +58,7 @@ const PostContent = () => {
 
   return (
     <>
-      <Button fontSize={20} size="md" leftIcon={<AddIcon />} colorScheme="teal" onClick={onOpen}>
+      <Button disabled={!authSelector.is_verify} fontSize={20} size="md" leftIcon={<AddIcon />} colorScheme="teal" onClick={onOpen}>
         Post
       </Button>
 

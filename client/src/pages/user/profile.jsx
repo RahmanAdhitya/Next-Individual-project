@@ -28,7 +28,7 @@ const Profile = () => {
       full_name: authSelector.full_name,
       bio: authSelector.bio,
       image_url: authSelector.image_url,
-      is_verified: authSelector.is_verified,
+      is_verify: authSelector.is_verify,
     },
   });
 
@@ -85,7 +85,7 @@ const Profile = () => {
         email: authSelector.email,
         bio: formik.values.bio ? formik.values.bio : authSelector.bio,
         image_url: authSelector.image_url,
-        is_verified: authSelector.is_verified,
+        is_verify: authSelector.is_verify,
         full_name: formik.values.full_name ? formik.values.full_name : authSelector.full_name,
       };
       console.log(updateData);
@@ -131,6 +131,9 @@ const Profile = () => {
     }
   };
 
+  // useEffect(console.log(authSelector.is_verify), []);
+  console.log(authSelector);
+
   return (
     <>
       <Flex boxSizing="sm" justify={'center'} mt={4}>
@@ -140,7 +143,7 @@ const Profile = () => {
               User Profile
             </Heading>
           </Flex>
-          <Flex hidden={authSelector.is_verified} justify={'center'}>
+          <Flex hidden={authSelector.is_verify} justify={'center'}>
             <Button size="xs" colorScheme="yellow" cursor="pointer" onClick={() => resendVerifiedEmail()}>
               verifiy Account
             </Button>
@@ -152,7 +155,7 @@ const Profile = () => {
             <>
               <Flex mt={5} justify={'center'}>
                 <Input accept="image/png, image/jpeg" display="none" type="file" id="image_url" name="image_url" onChange={handelFile} ref={inputFileRef} />
-                <Button size="xs" onClick={() => inputFileRef.current.click()} colorScheme="facebook">
+                <Button hidden={!authSelector.is_verify} size="xs" onClick={() => inputFileRef.current.click()} colorScheme="facebook">
                   choose File
                 </Button>
               </Flex>
@@ -165,7 +168,7 @@ const Profile = () => {
             </>
           ) : (
             <Flex justify="center">
-              <Button size="xs" onClick={() => setEditPic(!editPic)} colorScheme="facebook">
+              <Button hidden={!authSelector.is_verify} size="xs" onClick={() => setEditPic(!editPic)} colorScheme="facebook">
                 Change Profile Picture
               </Button>
             </Flex>
@@ -197,11 +200,11 @@ const Profile = () => {
 
           <Flex justify={'end'}>
             {edit ? (
-              <Button size="sm" mb={3} me={3} onClick={() => setEdit(!edit)} colorScheme="orange">
+              <Button size="sm" mb={3} me={3} onClick={() => setEdit(!edit)} colorScheme="orange" hidden={!authSelector.is_verify}>
                 cancel
               </Button>
             ) : (
-              <Button size="sm" mb={3} me={3} onClick={() => setEdit(!edit)} colorScheme="messenger">
+              <Button size="sm" mb={3} me={3} onClick={() => setEdit(!edit)} colorScheme="messenger" hidden={!authSelector.is_verify}>
                 edit
               </Button>
             )}

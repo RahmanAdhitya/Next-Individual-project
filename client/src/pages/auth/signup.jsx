@@ -1,7 +1,8 @@
 // this file for login layout
 
-import { Icon, FormControl, FormLabel, Stack, Input, Box, Container, Text, Button, InputGroup, InputRightElement, FormHelperText, useToast, Alert, AlertIcon } from '@chakra-ui/react';
+import { Icon, FormControl, FormLabel, Stack, Input, Box, Container, Text, Button, InputGroup, InputRightElement, FormHelperText, useToast, Alert, AlertIcon, Flex, HStack } from '@chakra-ui/react';
 import { useFormik } from 'formik';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import { IoMdEye, IoMdEyeOff } from 'react-icons/io';
@@ -40,31 +41,23 @@ const signupPage = () => {
       console.log(values);
       setTimeout(async () => {
         try {
-          if (values.password != values.repeatPassword) {
-            throw new Error('password not match');
-          }
-          await api.post('/auth/register', values);
+          const res = await api.post('/auth/register', values);
 
-          toast({
-            title: 'Account created.',
-            description: 'your account has been created successfully, check your email for verify your new account',
-            status: 'success',
-            duration: 9000,
-            isClosable: true,
-          });
-          router.push('/auth/login');
+          if (res.data.message !== undefined) {
+            toast({
+              title: 'Account created.',
+              description: `${res.data.message} check your email for verify your new account `,
+              status: 'success',
+              duration: 9000,
+              isClosable: true,
+            });
+          }
+          formik.setSubmitting(false);
         } catch (err) {
           console.log(err);
-          toast({
-            title: 'error',
-            description: err.message,
-            status: 'error',
-          });
+          formik.setSubmitting(false);
         }
-
-        // dispatch(signUp(values, formik.setSubmitting))
       }, 3000);
-      formik.setSubmitting(false);
     },
   });
 
@@ -162,6 +155,16 @@ const signupPage = () => {
                 </Button>
               </Stack>
             </form>
+            <Flex mt={4} justify="center">
+              <Text me={2}>Back to </Text>
+              <Link href={'/auth/login'}>
+                <Text>
+                  <Button fontSize="md" variant="link" colorScheme="blue" size="sm">
+                    Login
+                  </Button>
+                </Text>
+              </Link>
+            </Flex>
           </Box>
         </Stack>
       </Container>

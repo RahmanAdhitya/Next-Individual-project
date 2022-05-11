@@ -68,7 +68,10 @@ const ContentCard = ({ profilPic, id, username, likes, caption, image, location,
     });
 
     setData(data.concat(res.data.result.rows));
-    setCount(count + res.data.result.count);
+    setCount(res.data.result.count);
+
+    console.log(data.length);
+    console.log(count);
   };
 
   const renderComment = () => {
@@ -106,7 +109,6 @@ const ContentCard = ({ profilPic, id, username, likes, caption, image, location,
       comment: formik.values.comment,
     };
     const res = await api.post(`/posts/${id}-comment`, dataComment);
-    const newData = res.data.result;
     // console.log(newData);
 
     setData([res.data.result].concat(data));
@@ -312,7 +314,7 @@ const ContentCard = ({ profilPic, id, username, likes, caption, image, location,
           </Text>
           <Box hidden={router.pathname === '/posts/[id]' ? true : false}>{renderComment()}</Box>
           <Flex justify="center">
-            <Button size="sm" hidden={data.length === count ? true : false || router.pathname === '/posts/[id]' ? true : false} onClick={() => moreComment()}>
+            <Button mt="2" size="sm" hidden={data.length === count ? true : false} onClick={() => moreComment()}>
               see more
             </Button>
           </Flex>

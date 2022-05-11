@@ -11,7 +11,13 @@ const moment = require('moment');
 const authControllers = {
   registerUser: async (req, res) => {
     try {
-      const { username, email, full_name, password } = req.body;
+      const { username, email, full_name, password, repeatPassword } = req.body;
+
+      if (password !== repeatPassword) {
+        return res.status(400).json({
+          message: 'password not match',
+        });
+      }
 
       const isUsernameEmailRegisterd = await User.findOne({
         where: {
