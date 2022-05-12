@@ -1,13 +1,15 @@
 import { Icon, Box, Button, Flex, FormControl, FormHelperText, FormLabel, Input, InputRightElement, Text, useToast, InputGroup } from '@chakra-ui/react';
 import { useFormik } from 'formik';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import api from '../../lib/api';
 import { useRouter } from 'next/router';
 import * as Yup from 'yup';
 import { IoMdEye, IoMdEyeOff } from 'react-icons/io';
+import { useSelector } from 'react-redux';
 
 const resetPassword = () => {
   const [passwordVisible, setPasswordVisible] = useState(false);
+  const authSelector = useSelector((state) => state.auth);
 
   const toast = useToast();
   const formik = useFormik({
@@ -58,6 +60,12 @@ const resetPassword = () => {
     const { value, name } = event.target;
     formik.setFieldValue(name, value);
   };
+
+  useEffect(() => {
+    if (authSelector.id) {
+      router.push('/');
+    }
+  }, [authSelector.id]);
 
   return (
     <Flex justify="center" mt="10">

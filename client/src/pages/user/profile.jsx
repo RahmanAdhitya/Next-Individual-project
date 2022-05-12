@@ -140,11 +140,11 @@ const Profile = () => {
   // useEffect(console.log(authSelector.is_verified), []);
   console.log(authSelector);
 
-  // useEffect(() => {
-  //   if (authSelector.id) {
-  //     router.push('/auth/login');
-  //   }
-  // }, []);
+  useEffect(() => {
+    if (!authSelector.id) {
+      router.push('/auth/login');
+    }
+  }, []);
   return (
     <>
       <Flex boxSizing="sm" justify={'center'} mt={4}>

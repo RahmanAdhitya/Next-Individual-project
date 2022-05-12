@@ -11,12 +11,13 @@ const VerificationPage = () => {
   const router = useRouter();
 
   useEffect(() => {
+    jsCookie.remove('user_data');
+    jsCookie.remove('auth_token');
+
     dispatch({
       type: auth_types.LOGOUT_USER,
     });
 
-    jsCookie.remove('user_data');
-    jsCookie.remove('auth_token');
     router.push('/auth/login');
   });
   return (
