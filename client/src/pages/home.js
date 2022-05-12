@@ -72,8 +72,9 @@ export default function Home() {
         }),
         3000
       );
+    } else {
+      fetchPost();
     }
-    fetchPost();
   }, [page]);
 
   const renderPost = () => {

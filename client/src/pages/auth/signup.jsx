@@ -115,7 +115,15 @@ const signupPage = () => {
                     //
                   />
                   <InputRightElement
-                    children={<Icon fontSize="xl" onClick={() => setPasswordVisible(!passwordVisible)} as={passwordVisible ? IoMdEyeOff : IoMdEye} sx={{ _hover: { cursor: 'pointer' } }} />}
+                    children={
+                      <Icon
+                        fontSize="xl"
+                        onClick={() => setPasswordVisible(!passwordVisible)}
+                        //
+                        as={passwordVisible ? IoMdEyeOff : IoMdEye}
+                        sx={{ _hover: { cursor: 'pointer' } }}
+                      />
+                    }
                     //
                   />
                 </InputGroup>
@@ -128,7 +136,7 @@ const signupPage = () => {
                 </FormLabel>
                 <InputGroup>
                   <Input
-                    type={passwordVisible ? 'text' : 'password'}
+                    type={repeatPasswordVisible ? 'text' : 'password'}
                     id="inputrepeatPassword"
                     onChange={inputHandler}
                     repeatP
@@ -136,7 +144,16 @@ const signupPage = () => {
                     //
                   />
                   <InputRightElement
-                    children={<Icon fontSize="xl" onClick={() => setrepeatPasswordVisible(!repeatPasswordVisible)} as={repeatPasswordVisible ? IoMdEyeOff : IoMdEye} sx={{ _hover: { cursor: 'pointer' } }} />}
+                    children={
+                      <Icon
+                        fontSize="xl"
+                        //
+                        onClick={() => setrepeatPasswordVisible(!repeatPasswordVisible)}
+                        as={repeatPasswordVisible ? IoMdEyeOff : IoMdEye}
+                        sx={{ _hover: { cursor: 'pointer' } }}
+                      />
+                    }
+
                     //
                   />
                 </InputGroup>

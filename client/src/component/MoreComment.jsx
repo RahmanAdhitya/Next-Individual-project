@@ -69,6 +69,7 @@ const MoreComment = ({ id }) => {
                 placeholder="comment"
                 name="comment"
                 onChange={inputHandler}
+                maxLength={10}
                 //
               />
 

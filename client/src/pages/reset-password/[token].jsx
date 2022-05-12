@@ -1,11 +1,14 @@
-import { Box, Button, Flex, FormControl, FormHelperText, FormLabel, Input, Text, useToast } from '@chakra-ui/react';
+import { Icon, Box, Button, Flex, FormControl, FormHelperText, FormLabel, Input, InputRightElement, Text, useToast, InputGroup } from '@chakra-ui/react';
 import { useFormik } from 'formik';
-import React from 'react';
+import React, { useState } from 'react';
 import api from '../../lib/api';
 import { useRouter } from 'next/router';
 import * as Yup from 'yup';
+import { IoMdEye, IoMdEyeOff } from 'react-icons/io';
 
 const resetPassword = () => {
+  const [passwordVisible, setPasswordVisible] = useState(false);
+
   const toast = useToast();
   const formik = useFormik({
     initialValues: {
@@ -66,7 +69,21 @@ const resetPassword = () => {
         <form>
           <FormControl mt="2" isInvalid={formik.errors.password}>
             <FormLabel htmlFor="inputPassword">Password</FormLabel>
-            <Input onChange={inputHandler} id="inputPassword" name="password" bgColor="white" />
+            <InputGroup>
+              <Input onChange={inputHandler} id="inputPassword" name="password" bgColor="white" type={passwordVisible ? 'text' : 'password'} />
+              <InputRightElement
+                children={
+                  <Icon
+                    fontSize="xl"
+                    onClick={() => setPasswordVisible(!passwordVisible)}
+                    //
+                    as={passwordVisible ? IoMdEyeOff : IoMdEye}
+                    sx={{ _hover: { cursor: 'pointer' } }}
+                  />
+                }
+                //
+              />
+            </InputGroup>
             <FormHelperText>{formik.errors.password}</FormHelperText>
           </FormControl>
 
