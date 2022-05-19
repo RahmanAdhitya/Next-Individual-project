@@ -30,12 +30,12 @@ import React, { useEffect, useState } from 'react';
 import NextLink from 'next/link';
 import { useFormik } from 'formik';
 import { FiSend } from 'react-icons/fi';
-import { BsThreeDotsVertical } from 'react-icons/bs';
+import { BsChevronDoubleLeft, BsThreeDotsVertical } from 'react-icons/bs';
 import { MdDeleteForever, MdShare } from 'react-icons/md';
 import { BiEditAlt } from 'react-icons/bi';
 import { useDispatch, useSelector } from 'react-redux';
 import moment from 'moment';
-import { post_types } from '../redux/types';
+import { comment_types, post_types } from '../redux/types';
 import api from '../lib/api';
 import { useRouter } from 'next/router';
 
@@ -52,6 +52,7 @@ const ContentCard = ({ profilPic, id, username, likes, caption, image, location,
 
   const authSelector = useSelector((state) => state.auth);
   const postSelector = useSelector((state) => state.post);
+  const commentSelector = useSelector((state) => state.comment);
 
   const limitPage = 5;
 
@@ -67,23 +68,40 @@ const ContentCard = ({ profilPic, id, username, likes, caption, image, location,
       },
     });
 
-    setData(data.concat(res.data.result.rows));
+    dispatch({
+      type: comment_types.FETCH_COMMENT,
+      payload: res.data.result.rows,
+    });
     setCount(res.data.result.count);
   };
 
+  console.log(postSelector);
+
   const renderComment = () => {
-    return data.map((val, index) => {
-      return (
-        <Flex alignItems="center" justify="space-between">
-          <Text fontSize="sm">
-            <span style={{ fontWeight: 'bold' }}>{val.User?.username}</span>
-            &nbsp;{val.comment}
-          </Text>
-          <Text fontSize="xx-small">{moment(val?.createdAt).startOf('day').fromNow()}</Text>
-        </Flex>
-      );
+    return commentSelector.commentList.map((val, index) => {
+      if (!val[index]) {
+        return null;
+      }
+
+      if (val[index].Postid === id) {
+        return (
+          <Flex alignItems="center" justify="space-between">
+            <Text fontSize="sm">
+              <span style={{ fontWeight: 'bold' }}>{val[index].User?.username}</span>
+              &nbsp;{val[index].comment}
+            </Text>
+            <Text fontSize="xx-small">{moment(val[index]?.createdAt).startOf('day').fromNow()}</Text>
+          </Flex>
+        );
+      }
     });
   };
+
+  // console.log(
+  //   commentSelector.commentList.map((val) => {
+  //     val;
+  //   })
+  // );
 
   const formik = useFormik({
     initialValues: {
@@ -171,6 +189,8 @@ const ContentCard = ({ profilPic, id, username, likes, caption, image, location,
 
     setEditCaption(false);
   };
+
+  // console.log(commentSelector);
 
   useEffect(() => {
     fetchComment();
@@ -308,12 +328,12 @@ const ContentCard = ({ profilPic, id, username, likes, caption, image, location,
             <></>
           )}
           <Divider colorScheme="whatsapp" />
-          <Text hidden={router.pathname === '/posts/[id]' ? true : false} as="i" fontSize="sm" color="gray.500">
+          <Text as="i" fontSize="sm" color="gray.500">
             comment
           </Text>
-          <Box hidden={router.pathname === '/posts/[id]' ? true : false}>{renderComment()}</Box>
+          <Box>{renderComment()}</Box>
           <Flex justify="center">
-            <Button mt="2" size="sm" hidden={data.length === count ? true : false} onClick={() => moreComment()}>
+            <Button mt="2" size="sm" onClick={() => moreComment()}>
               see more
             </Button>
           </Flex>

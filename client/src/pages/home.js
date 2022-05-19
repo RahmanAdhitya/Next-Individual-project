@@ -20,6 +20,7 @@ export default function Home() {
 
   const dispatch = useDispatch([]);
   const postSelector = useSelector((state) => state.post);
+  const commentSelector = useSelector((state) => state.comment);
 
   const limitPage = 5;
 
@@ -28,35 +29,97 @@ export default function Home() {
   };
 
   const fetchPost = async () => {
-    const res = await api.get('/posts', {
-      params: {
-        _limit: limitPage,
-        _page: [page, more],
-      },
-    });
+    try {
+      const res = await api.get('/posts', {
+        params: {
+          _limit: limitPage,
+          _page: [page, more],
+        },
+      });
 
-    if (page === 1) {
-      dispatch({
-        type: post_types.FETCH_POST,
-        payload: res?.data?.result?.rows,
-      });
-    } else {
-      dispatch({
-        type: post_types.UPDATE_POST,
-        payload: res?.data?.result?.rows,
-      });
+      if (page === 1) {
+        dispatch({
+          type: post_types.FETCH_POST,
+          payload: res?.data?.result?.rows,
+        });
+      } else {
+        dispatch({
+          type: post_types.UPDATE_POST,
+          payload: res?.data?.result?.rows,
+        });
+      }
+
+      // }
+
+      setCount(res?.data?.result?.count);
+    } catch (err) {
+      console.log(err);
     }
-
-    // }
-
-    setCount(res?.data?.result?.count);
   };
-
-  // console.log(postSelector);
 
   const data = postSelector.postList;
   const datalength = data.length;
 
+  // const fetchComment = async (id) => {
+  //   try {
+  //     const res = await api.get(`/posts/${id}/comment`, {
+  //       params: {
+  //         _limit: limitPage,
+  //         _page: more,
+  //       },
+  //     });
+
+  //     console.log(res.data);
+  //     dispatch({
+  //       type: comment_types.FETCH_COMMENT,
+  //       payload: res.data.result.rows,
+  //     });
+  //     // setData(data.concat(res.data.result.rows));
+  //     // setCount(res.data.result.count);
+  //   } catch (err) {
+  //     console.log(err);
+  //   }
+  // };
+
+  const renderPost = () => {
+    return data.map((post, index) => {
+      // fetchComment(post.id);
+
+      // const res = async () => {
+      //   await api.get(`/posts/${post.id}/comment`, {
+      //     params: {
+      //       _limit: limitPage,
+      //       _page: more,
+      //     },
+      //   });
+
+      //   dispatch({
+      //     type: comment_types.FETCH_COMMENT,
+      //     payload: res.data.result.rows,
+      //   });
+      //   console.log(res.data);
+      // };
+      return (
+        <Box m={4}>
+          <ContentCard
+            caption={post?.caption}
+            profilPic={post?.User?.image_url}
+            userId={post?.UserId}
+            username={post?.User?.username}
+            location={post?.location}
+            likes={post?.like_count}
+            image={post?.image_url}
+            id={post?.id}
+            // comment={commentSelector}
+            createDate={post?.createdAt}
+            index={index}
+          />
+        </Box>
+      );
+    });
+  };
+
+  console.log(commentSelector);
   useEffect(() => {
     if (!authSelector.id) {
       router.push('/');
@@ -76,29 +139,6 @@ export default function Home() {
       fetchPost();
     }
   }, [page]);
-
-  const renderPost = () => {
-    return data.map((post, index) => {
-      return (
-        <Box m={4}>
-          <ContentCard
-            caption={post?.caption}
-            profilPic={post?.User?.image_url}
-            userId={post?.UserId}
-            username={post?.User?.username}
-            location={post?.location}
-            likes={post?.like_count}
-            image={post?.image_url}
-            id={post?.id}
-            comment={post?.Comments}
-            createDate={post?.createdAt}
-            index={index}
-          />
-        </Box>
-      );
-    });
-  };
-
   return (
     <>
       <Page
@@ -125,6 +165,7 @@ export default function Home() {
         //
       >
         {renderPost()}
+        {/* <ContentCard /> */}
       </InfiniteScroll>
     </>
   );
